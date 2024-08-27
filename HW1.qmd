@@ -1,0 +1,70 @@
+---
+title: "HW 1"
+format: pdf
+editor: visual
+---
+
+Question 2
+
+```{r}
+
+library(tidyverse)
+library(matlib)
+
+y <- matrix(c(6.2,3.5,5.2,4.7))
+
+x <- matrix(c(1,1,1,1,0.9,0,0.9,0.9,0.5,0.5,0,0.5,0.5,0.5,0.5,0),
+            nrow = 4,
+            ncol = 4,
+            byrow = FALSE
+            )
+theta <- matrix(c(2,4,3,100))
+
+```
+
+```{r}
+a.
+transx <- t(x)
+
+b.
+
+transy <- t(y)
+y2 < vector(c(1,1,1,1))
+
+confy <- transy %*% y2
+
+c. 
+
+x %*% theta
+
+d. 
+
+det(x)
+
+e.
+
+inv(x)
+
+f. 
+
+(inv((transx %*% x))%*%theta)
+
+g. 
+
+transy %*% x %*% y
+
+h.
+
+tr(x)
+
+i. 
+
+y %/% x
+
+#FIXME
+
+j.
+
+#FIXME
+
+```
