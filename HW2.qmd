@@ -1,0 +1,48 @@
+---
+title: "HW2"
+format: html
+editor: visual
+---
+
+
+
+```{r}
+
+install.packages("markovchain")
+library(markovchain)
+library(tidyverse)
+
+```
+
+
+```{r}
+
+states <- c("I", "A", "B", "C", "D", "E", "F")
+
+transitionMatrix <- matrix(c(0,0.4,0,0, 0.6, 0,0,
+                             0,0,0.3334,0,0,0.6666,0,
+                             0,0,0,1,0,0,0,
+                             0,0,0,1,0,0,0,
+                             0,0,0,0,0,1,0,
+                             0,0,0,0.5,0,0,0.5,
+                             0,0,0,0,0,0,1),
+                           nrow = 7, byrow = TRUE)
+
+rownames(transitionMatrix) <- (c("I","A","B","C","D","E", "F"))
+colnames(transitionMatrix) <-(c("I","A","B","C","D","E", "F"))
+
+
+markovChain <- new("markovchain", states = states, transitionMatrix = transitionMatrix, name = "Example Markov Chain")
+
+print(transitionMatrix)
+plot(markovChain)
+
+```
+
+```{r}
+
+
+
+
+```
+
