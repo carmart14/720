@@ -23,48 +23,54 @@ theta <- matrix(c(2,4,3,100))
 ```
 
 ```{r}
-a.
+#a.
 transx <- t(x)
+transx
 
-b.
+#b.
 
 transy <- t(y)
-y2 < vector(c(1,1,1,1))
+y2 <- matrix(rep(1, 4), nrow = 1)
 
-confy <- transy %*% y2
+y2 *transy
 
-c. 
+#c. 
 
 x %*% theta
 
-d. 
+#d. 
 
 det(x)
 
-e.
+#e.
 
-inv(x)
+solve(x)
 
-f. 
+#f. 
 
 (inv((transx %*% x))%*%theta)
 
-g. 
+#g. 
 
 transy %*% x %*% y
 
-h.
+#h.
 
 tr(x)
 
-i. 
+#i. 
 
-y %/% x
+inv(x) %x% y
 
-#FIXME
+b<- inv(x) %x% y
 
-j.
+#j.
 
-#FIXME
+x %*% theta
 
+e <- (y - (x %*% theta))
+
+transe <- t(e)
+
+e %*% transe
 ```
