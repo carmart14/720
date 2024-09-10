@@ -1,0 +1,27 @@
+---
+title: "HW3"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+```
+
+
+
+Plot QuarterUnitPizza distribution kernel
+
+```{r}
+
+data <- pi/4
+
+ggplot(data, aes(x = x)) +
+  geom_density(fill = "blue", alpha = 0.5) +
+  labs(title = "Kernel Density Plot", x = "Value", y = "Density")
+
+
+
+```
+
