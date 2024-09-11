@@ -9,19 +9,43 @@ library(tidyverse)
 library(ggplot2)
 ```
 
-
-
 Plot QuarterUnitPizza distribution kernel
 
 ```{r}
+# Define the function
+curve <- function(x) {
+  sqrt(1 - x^2)
+}
 
-data <- pi/4
+# Create a sequence of x values from 0 to 1
+x <- seq(0, 1, length.out = 100)
 
-ggplot(data, aes(x = x)) +
-  geom_density(fill = "blue", alpha = 0.5) +
-  labs(title = "Kernel Density Plot", x = "Value", y = "Density")
+# Compute the corresponding y values
+y <- curve(x)
 
+# Plot the function
+plot(x, y, type = "l", col = "purple", lwd = 2, 
+     xlab = "x", ylab = "f(x)", 
+     main = expression(sqrt(1 - x^2)))
+
+```
+
+
+```{r}
+
+#creating bivariate sequences
+
+y1 <- runif(100, min = 0, max = 1)
+x1 <- runif(100, min = 0, max = 1)
+
+# adding points to the function
+
+plot(x, y, type = "l", col = "red", lwd = 2, 
+     xlab = "x", ylab = "f(x)", 
+     main = expression(sqrt(1 - x^2)))+
+  points(x1, y1, col = "blue", pch = 19)
 
 
 ```
+
 
