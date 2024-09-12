@@ -7,6 +7,8 @@ editor: visual
 ```{r}
 library(tidyverse)
 library(ggplot2)
+library(dplyr)
+
 ```
 
 Plot QuarterUnitPizza distribution kernel
@@ -30,7 +32,6 @@ plot(x, y, type = "l", col = "purple", lwd = 2,
 
 ```
 
-
 ```{r}
 
 #creating bivariate sequences
@@ -45,9 +46,9 @@ plot(x, y, type = "l", col = "red", lwd = 2,
      main = expression(sqrt(1 - x^2)))+
   points(x1, y1, col = "blue", pch = 19)
 
+# add a box around this
 
 ```
-
 
 ```{r}
 # sampling 10 random x variables from the runif section
@@ -60,22 +61,26 @@ x2 <- runif(n, min = 0, max = 1)
 y2 <- runif(n, min = 0, max = 1)
 
 # Filter samples to satisfy x^2 + y^2 \leq 1
-filtered_samples <- data.frame(x2, y2)[x^2 + y^2 <= 1, ]
+filtered_samples <- data.frame(x2, y2)[sqrt(x^2 + y^2) <= 1, ]
 
-# Select 10 random variables
+# Select random variables that can be used to create the hist
 set.seed(123) # For reproducibility because random will change
-selected_samples <- filtered_samples[sample(nrow(filtered_samples), 10), ]
+selected_samples <- filtered_samples[sample(nrow(filtered_samples), 1000), ]
+
+test <- filtered_samples %>% 
+  filter(x2 <= (sqrt(x^2 + y^2 <=1)))
 
 # Print the selected samples
 print(selected_samples)
 
 # Plot histogram of the filtered samples
-hist(filtered_samples$x, breaks = 50, main = "Histogram of Filtered X Samples", xlab = "X values")
-hist(filtered_samples$y, breaks = 50, main = "Histogram of Filtered Y Samples", xlab = "Y values")
+
+# this should look curved like the unit circle, fix me
+hist(filtered_samples$x2, breaks = 50, main = "Histogram of Filtered X Samples", xlab = "X values")
+hist(filtered_samples$y2, breaks = 50, main = "Histogram of Filtered Y Samples", xlab = "Y values")
 
 
 ```
-
 
 ```{r}
 
@@ -97,12 +102,13 @@ print(paste("Estimated value of π:", pi_estimate))
 
 ```
 
-
 ```{r}
-intfuns <- function(x){x^2 + y^2}
-integrate(intfuns, lower = 0, upper = 1)
+intfuns <- function(x){1-x^2^(1/2)(1/k)}
+integrate((x)(intfuns, lower = 0, upper = 1))
 
 #FIX ME
+
+#should also be getting a number that's pi
 
 ```
 
@@ -114,8 +120,12 @@ integrate(intfuns, lower = 0, upper = 1)
 
 EX <- integer(intfuns(x))
 
+# (X \cdot (1-X^2)^2(1\k))  is the integral basically)
 
 
+#this is for Var(x)
+# mu should be the value u got from first integrate E(X-mu)^2, 
+
+# values for the G section will be the filtered values from the unit circle. The values you get with mean and shit, the answer should be similar to the numbers you got in Question F
 
 ```
-
