@@ -49,3 +49,73 @@ plot(x, y, type = "l", col = "red", lwd = 2,
 ```
 
 
+```{r}
+# sampling 10 random x variables from the runif section
+
+# Set the number of samples
+n <- 1000000
+
+# Generate bivariate uniform samples
+x2 <- runif(n, min = 0, max = 1)
+y2 <- runif(n, min = 0, max = 1)
+
+# Filter samples to satisfy x^2 + y^2 \leq 1
+filtered_samples <- data.frame(x2, y2)[x^2 + y^2 <= 1, ]
+
+# Select 10 random variables
+set.seed(123) # For reproducibility because random will change
+selected_samples <- filtered_samples[sample(nrow(filtered_samples), 10), ]
+
+# Print the selected samples
+print(selected_samples)
+
+# Plot histogram of the filtered samples
+hist(filtered_samples$x, breaks = 50, main = "Histogram of Filtered X Samples", xlab = "X values")
+hist(filtered_samples$y, breaks = 50, main = "Histogram of Filtered Y Samples", xlab = "Y values")
+
+
+```
+
+
+```{r}
+
+# Assuming you have already filtered your samples
+# PI is the number of points inside the quarter circle
+# PG is the total number of points generated
+
+estimate_pi_filtered <- function(PI, PG) {
+  pi_estimate <- 4 * (PI / PG)
+  return(pi_estimate)
+}
+
+# Defining the parameters for the loop
+PI <- 910000  # Number of points inside the quarter circle
+PG <- 1000000  # Total number of points generated
+pi_estimate <- estimate_pi_filtered(PI, PG)
+print(paste("Estimated value of π:", pi_estimate))
+
+
+```
+
+
+```{r}
+intfuns <- function(x){x^2 + y^2}
+integrate(intfuns, lower = 0, upper = 1)
+
+#FIX ME
+
+```
+
+```{r}
+
+# FIXME
+
+#integrate the function
+
+EX <- integer(intfuns(x))
+
+
+
+
+```
+
