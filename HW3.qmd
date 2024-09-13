@@ -1,7 +1,8 @@
 ---
-title: "HW3"
-format: html
+title: "HW3: Expectation and Variance"
+format: pdf
 editor: visual
+author: Carmen Martin
 ---
 
 ```{r}
@@ -11,7 +12,7 @@ library(dplyr)
 
 ```
 
-Plot QuarterUnitPizza distribution kernel
+Plot UnitPizza distribution kernel
 
 ```{r}
 # Define the function
@@ -26,7 +27,7 @@ x <- seq(0, 1, length.out = 100)
 y <- curve(x)
 
 # Plot the function
-plot(x, y, type = "l", col = "purple", lwd = 2, 
+plot(x, y, type = "l", col = "red", lwd = 2, 
      xlab = "x", ylab = "f(x)", 
      main = expression(sqrt(1 - x^2)))
 
@@ -44,43 +45,59 @@ x1 <- runif(100, min = 0, max = 1)
 plot(x, y, type = "l", col = "red", lwd = 2, 
      xlab = "x", ylab = "f(x)", 
      main = expression(sqrt(1 - x^2)))+
-  points(x1, y1, col = "blue", pch = 19)
+  points(x1, y1, col = "blue", pch = 19)+
+  box(col = "purple", lwd = 2)
 
-# add a box around this
 
 ```
+
 
 ```{r}
-# sampling 10 random x variables from the runif section
+set.seed(123)  # For reproducibility
 
-# Set the number of samples
-n <- 1000000
 
-# Generate bivariate uniform samples
-x2 <- runif(n, min = 0, max = 1)
-y2 <- runif(n, min = 0, max = 1)
+#Generate 10 random points 
 
-# Filter samples to satisfy x^2 + y^2 \leq 1
-filtered_samples <- data.frame(x2, y2)[sqrt(x^2 + y^2) <= 1, ]
+px <- runif(10, min = 0 , max = 1)
+py <- runif(10, min = 0, max = 1 )
 
-# Select random variables that can be used to create the hist
-set.seed(123) # For reproducibility because random will change
-selected_samples <- filtered_samples[sample(nrow(filtered_samples), 1000), ]
+pxy <- data.frame(px, py)
+print(pxy)
 
-test <- filtered_samples %>% 
-  filter(x2 <= (sqrt(x^2 + y^2 <=1)))
+# Function to generate UnitPizza random variables that fit the parameters
+unit_pizza <- function(n) {
+  x <- runif(n, 0, 1)
+  y <- runif(n, 0, 1)
+  df <- data.frame(x = x, y = y)
+  df <- df[(x^2 + y^2) <= 1, ]
+  return(df)
+}
 
-# Print the selected samples
-print(selected_samples)
 
-# Plot histogram of the filtered samples
+# Generate and print 10 random variables
+df_10 <- unit_pizza(10)
+print(df_10)
 
-# this should look curved like the unit circle, fix me
-hist(filtered_samples$x2, breaks = 50, main = "Histogram of Filtered X Samples", xlab = "X values")
-hist(filtered_samples$y2, breaks = 50, main = "Histogram of Filtered Y Samples", xlab = "Y values")
+
+# Generate 1,000,000 random variables
+df_1M <- unit_pizza(1000000)
+
+# Plot histogram of x and y values
+ggplot(df_1M, aes(x = x)) +
+  geom_histogram(binwidth = 0.01, fill = "blue", alpha = 0.7) +
+  labs(title = "Histogram of x values in UnitPizza",
+       x = "x",
+       y = "Frequency")
+
+ggplot(df_1M, aes(x = y)) +
+  geom_histogram(binwidth = 0.01, fill = "purple", alpha = 0.7) +
+  labs(title = "Histogram of y values in QuarterUnitPizza",
+       x = "y",
+       y = "Frequency")
 
 
 ```
+
 
 ```{r}
 
@@ -88,44 +105,84 @@ hist(filtered_samples$y2, breaks = 50, main = "Histogram of Filtered Y Samples",
 # PI is the number of points inside the quarter circle
 # PG is the total number of points generated
 
+px2 <- runif(1000000, min = 0 , max = 1)
+py2 <- runif(1000000, min = 0, max = 1 )
+
+pxy2 <- data.frame(px2, py2)
+
+filtered_pxy2 <- unit_pizza(1000000)
+
 estimate_pi_filtered <- function(PI, PG) {
   pi_estimate <- 4 * (PI / PG)
   return(pi_estimate)
 }
 
+nrow(filtered_pxy2)
+
 # Defining the parameters for the loop
-PI <- 910000  # Number of points inside the quarter circle
-PG <- 1000000  # Total number of points generated
+PI <- nrow(filtered_pxy2)  # Number of points inside the quarter circle
+PG <- nrow(pxy2)  # Total number of points generated
 pi_estimate <- estimate_pi_filtered(PI, PG)
 print(paste("Estimated value of π:", pi_estimate))
 
 
 ```
 
+
 ```{r}
-intfuns <- function(x){1-x^2^(1/2)(1/k)}
-integrate((x)(intfuns, lower = 0, upper = 1))
 
-#FIX ME
+intfuns <- function(x){
+  sqrt(1- x^2)
+}
 
-#should also be getting a number that's pi
+area <- integrate(intfuns, lower = 0, upper = 1)
+
+pi_estamate2 <- area$value *4
+print(paste("Estimated value of π:",pi_estamate2))
 
 ```
+
 
 ```{r}
 
 # FIXME
-
-#integrate the function
-
-EX <- integer(intfuns(x))
-
-# (X \cdot (1-X^2)^2(1\k))  is the integral basically)
-
 
 #this is for Var(x)
 # mu should be the value u got from first integrate E(X-mu)^2, 
 
 # values for the G section will be the filtered values from the unit circle. The values you get with mean and shit, the answer should be similar to the numbers you got in Question F
 
+K <- integrate(intfuns, lower = 0 , upper = 1)$value
+
+f_normalized <- function(x) {
+  (1 / K) * (1 - x^2)^(-1/2)
+}
+
+
+E_X <- integrate(function(x) x * f_normalized(x), lower = 0, upper = 1)$value
+E_X2 <- integrate(function(x) x^2 * f_normalized(x), lower = 0, upper = 1)$value
+Var_X <- E_X2 - (E_X)^2
+
+print(paste("E(X) =", E_X ))
+print(paste("Var(X) =", Var_X ))
+
+
 ```
+
+
+```{r}
+
+# FIX ME 
+# accounting for the PDF
+weights <- f_normalized(df_1M$x)
+
+# Calculate the mean and variance that are normalized with the 1\k 
+E_X_mc <- mean(df_1M$x * weights)
+Var_X_mc <- var(df_1M$x * weights)
+
+print(paste("E_X_mc =", E_X_mc))
+print(paste("Var_X_mc =", Var_X_mc ))
+
+
+```
+
