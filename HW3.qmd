@@ -51,7 +51,6 @@ plot(x, y, type = "l", col = "red", lwd = 2,
 
 ```
 
-
 ```{r}
 set.seed(123)  # For reproducibility
 
@@ -98,7 +97,6 @@ ggplot(df_1M, aes(x = y)) +
 
 ```
 
-
 ```{r}
 
 # Assuming you have already filtered your samples
@@ -128,6 +126,11 @@ print(paste("Estimated value of π:", pi_estimate))
 
 ```
 
+Suppose you did not know the numerical value of π. Use the fact that you know the area (2)
+of the unnormalized pdf curve, the area covered by the bivariate uniform, and that you
+can derive an expression for one as a proportion of the other, to obtain a Monte Carlo (ie,
+random sampling-based) estimate.
+
 
 ```{r}
 
@@ -142,20 +145,15 @@ print(paste("Estimated value of π:",pi_estamate2))
 
 ```
 
+Calculate E(X) and Var(X) by integration numerically, using integrate()
 
 ```{r}
 
-# FIXME
-
-#this is for Var(x)
-# mu should be the value u got from first integrate E(X-mu)^2, 
-
-# values for the G section will be the filtered values from the unit circle. The values you get with mean and shit, the answer should be similar to the numbers you got in Question F
 
 K <- integrate(intfuns, lower = 0 , upper = 1)$value
 
 f_normalized <- function(x) {
-  (1 / K) * (1 - x^2)^(-1/2)
+  (1 / K) * (1 - x^2)^(1/2)
 }
 
 
@@ -169,10 +167,13 @@ print(paste("Var(X) =", Var_X ))
 
 ```
 
+Obtain Monte Carlo estimates of E(X) and Var(X) by applying mean() and var() to your (2)
+simulated values of X. These should approximately agree with the numerically derived
+results from above.
 
 ```{r}
 
-# FIX ME 
+
 # accounting for the PDF
 weights <- f_normalized(df_1M$x)
 
@@ -185,4 +186,3 @@ print(paste("Var_X_mc =", Var_X_mc ))
 
 
 ```
-
