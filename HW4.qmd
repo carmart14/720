@@ -1,0 +1,155 @@
+---
+title: "HW4"
+format: pdf
+editor: visual
+---
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+
+`````````
+
+##Question 3: Hypergeometric CDF tests of Association
+
+A. The probability that, under the null model, the observed number of plastics factory workers would get lung cancer.
+
+x/q = 9 m = plastic workers ( 27) n = glass workers (54) k = total cancer (22) nn = number of obs
+
+Function : #fixme
+
+```{r}
+
+dhyper(9, 27,54, 22, log= FALSE)
+
+```
+
+B. The probability that, under the null model, the number of plastics factory workers getting cancer would be equal to or greater than that observed. (Note: This probability typically referred to as a p-value, and this procedure is a specic example of Fishers exact test.)
+
+P(x >= 9)
+
+```{r}
+
+phyper(9, 27, 54, 22, lower.tail = FALSE)
+
+```
+
+C. Estimate this p-value by simulation: in R, using rhyper, simulate 10,000 draws from this distribution and calculate what proportion of them equal or exceed the observed number.
+
+```{r}
+#10k random draws 
+draw <- rhyper(10000, 27, 54, 22)
+
+#amount from the draw that are greater or equal to 9
+pass <- sum(draw >= 9)
+
+# finding the pvalue
+sum((pass >= draw) / 100000)
+
+```
+
+D. By any means you like, find the number of cancer victims (greater than 9) in the plastics factory that would make this p-value less than 0.05.
+
+```{r}
+
+
+
+```
+
+##Question 4
+
+Use the information above and from the previous question to generate random samples of X where X Expo( = 3). Show R code and a plot of a histogram containing 1000 samples.
+
+```{r}
+# generate 1k random uniform samples
+samples <- runif(1000, min = 0, max = 1)
+
+# plotting
+hist(samples, breaks = 30, main = "Histogram of Uniform Samples", xlab = "Value", ylab = "Frequency", col = "skyblue")
+
+# setting the mu value
+mu <- 3
+
+#Inverting the random samples. ie inverting CDF
+exp_samples <- (-log(1 - samples) / mu)
+
+# plotting
+hist(exp_samples, breaks = 30, main = "Histogram of Exponential Samples", xlab = "Value", ylab = "Frequency", col = "skyblue")
+
+```
+
+
+## Question 5 
+
+C. Plot the value of the likelihood for different values of parameter : put on the x-axis,
+with values = (0.01,0.02,0.99) and likelihood on the y-axis. Repeat this plot for the
+log-likelihood.
+
+
+```{r}
+
+#setting up the different values for theta
+theta <- seq(0.01, 0.99, by = 0.01)
+
+#creating likelihood data
+like <- dbinom(3, size = 5, p = theta, log = FALSE)
+
+# creating the log-likelihood data
+loglik <- dbinom(3, size = 5, p = theta, log = TRUE)
+
+#data frame for easier plotting
+like_data <- data.frame(Theta = theta , Loglik = loglik, Like = like)
+
+#graphing the standard likelihood
+ggplot(data = like_data, aes(x = Theta, y = Like)) +
+  geom_line() +
+  geom_vline(xintercept = like_pHat, color = "firebrick", size = 1) +
+  labs(y = "likelihood", 
+    x = expression(paste("Hypothesized theta, ", italic(p)))) + 
+  theme_classic()
+
+# Max  likelihood for basic plot
+MaxLike <- like - max(like)
+
+like_data$MaxLike <- MaxLike
+
+like_pHat <- theta[like == max(like)]
+
+#graphing the log-likelihood
+ggplot(data = like_data, aes(x = Theta, y = Loglik)) +
+  geom_line() +
+  labs(y = "Log-likelihood", 
+    x = expression(paste("Hypothesized theta, ", italic(p)))) + 
+  theme_classic()
+
+# Getting the maximum likelihood value for the graph/distribution
+MaxlogLike <- loglik - max(loglik)
+
+like_data$Max <- MaxlogLike
+
+pHat <- theta[loglik == max(loglik)]
+
+ggplot(data = like_data, aes(x = Theta, y = Loglik)) +
+  geom_line() +
+  geom_vline(xintercept = pHat, color = "firebrick", size = 1) +
+  labs(y = "Log-likelihood", 
+    x = expression(paste("Hypothesized theta, ", italic(p)))) + 
+  theme_classic()  
+
+```
+
+
+D. At what value of is the observed data most likely? Why must this value be the same for
+ both plots?
+ 
+
+Theta = 0.6 is where the data is most likely, and both graphs are most likely share that value because the data is transformed but not changed. So the log transformation still preserves the order of the values it's transforming while keeping the parameters the same. 
+
+
+
+
+
+
+
+ 
