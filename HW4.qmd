@@ -4,12 +4,10 @@ format: pdf
 editor: visual
 ---
 
-
 ```{r}
 library(tidyverse)
 library(ggplot2)
 
-`````````
 
 ##Question 3: Hypergeometric CDF tests of Association
 
@@ -19,7 +17,6 @@ x/q = 9 m = plastic workers ( 27) n = glass workers (54) k = total cancer (22) n
 
 Function : #fixme
 
-```{r}
 
 dhyper(9, 27,54, 22, log= FALSE)
 
@@ -27,7 +24,7 @@ dhyper(9, 27,54, 22, log= FALSE)
 
 B. The probability that, under the null model, the number of plastics factory workers getting cancer would be equal to or greater than that observed. (Note: This probability typically referred to as a p-value, and this procedure is a specic example of Fishers exact test.)
 
-P(x >= 9)
+P(x \>= 9)
 
 ```{r}
 
@@ -79,13 +76,9 @@ hist(exp_samples, breaks = 30, main = "Histogram of Exponential Samples", xlab =
 
 ```
 
+## Question 5
 
-## Question 5 
-
-C. Plot the value of the likelihood for different values of parameter : put on the x-axis,
-with values = (0.01,0.02,0.99) and likelihood on the y-axis. Repeat this plot for the
-log-likelihood.
-
+C. Plot the value of the likelihood for different values of parameter : put on the x-axis, with values = (0.01,0.02,0.99) and likelihood on the y-axis. Repeat this plot for the log-likelihood.
 
 ```{r}
 
@@ -139,17 +132,6 @@ ggplot(data = like_data, aes(x = Theta, y = Loglik)) +
 
 ```
 
+D. At what value of is the observed data most likely? Why must this value be the same for both plots?
 
-D. At what value of is the observed data most likely? Why must this value be the same for
- both plots?
- 
-
-Theta = 0.6 is where the data is most likely, and both graphs are most likely share that value because the data is transformed but not changed. So the log transformation still preserves the order of the values it's transforming while keeping the parameters the same. 
-
-
-
-
-
-
-
- 
+Theta = 0.6 is where the data is most likely, and both graphs are most likely share that value because the data is transformed but not changed. So the log transformation still preserves the order of the values it's transforming while keeping the parameters the same.
