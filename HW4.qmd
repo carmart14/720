@@ -76,7 +76,7 @@ hist(exp_samples, breaks = 30, main = "Histogram of Exponential Samples", xlab =
 
 ```
 
-## Question 5
+## Question 6
 
 C. Plot the value of the likelihood for different values of parameter : put on the x-axis, with values = (0.01,0.02,0.99) and likelihood on the y-axis. Repeat this plot for the log-likelihood.
 
