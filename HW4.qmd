@@ -4,19 +4,20 @@ format: pdf
 editor: visual
 ---
 
+##Question 3: Hypergeometric CDF tests of Association
+
 ```{r}
 library(tidyverse)
 library(ggplot2)
-
-
-##Question 3: Hypergeometric CDF tests of Association
+```
 
 A. The probability that, under the null model, the observed number of plastics factory workers would get lung cancer.
 
 x/q = 9 m = plastic workers ( 27) n = glass workers (54) k = total cancer (22) nn = number of obs
 
-Function : #fixme
+#FIX ME, need to add a general function like P(x blah blah blah)
 
+```{r}
 
 dhyper(9, 27,54, 22, log= FALSE)
 
