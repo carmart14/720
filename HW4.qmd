@@ -13,9 +13,8 @@ library(ggplot2)
 
 A. The probability that, under the null model, the observed number of plastics factory workers would get lung cancer.
 
-x/q = 9 m = plastic workers ( 27) n = glass workers (54) k = total cancer (22) nn = number of obs
+x/q = 9 m = plastic workers (27) n = glass workers (54) k = total cancer (22) nn = number of obs
 
-#FIX ME, need to add a general function like P(x blah blah blah)
 
 ```{r}
 
@@ -23,13 +22,13 @@ dhyper(9, 27,54, 22, log= FALSE)
 
 ```
 
-B. The probability that, under the null model, the number of plastics factory workers getting cancer would be equal to or greater than that observed. (Note: This probability typically referred to as a p-value, and this procedure is a specic example of Fishers exact test.)
+B. The probability that, under the null model, the number of plastics factory workers getting cancer would be equal to or greater than that observed. (Note: This probability typically referred to as a p-value, and this procedure is a specific example of Fishers exact test.)
 
 P(x \>= 9)
 
 ```{r}
 
-phyper(9, 27, 54, 22, lower.tail = FALSE)
+1-phyper(8, 27, 54, 22, lower.tail = TRUE)
 
 ```
 
@@ -42,22 +41,43 @@ draw <- rhyper(10000, 27, 54, 22)
 #amount from the draw that are greater or equal to 9
 pass <- sum(draw >= 9)
 
-# finding the pvalue
-sum((pass >= draw) / 100000)
+# finding the proportion
+sum(pass/ 10000)
+
 
 ```
 
 D. By any means you like, find the number of cancer victims (greater than 9) in the plastics factory that would make this p-value less than 0.05.
 
+
 ```{r}
 
+# Define the parameters
+population_size <- 27
+null_hypothesis_prob <- 0.2657335 # from answer above 
+significance_level <- 0.05
+
+# Function to find the minimum number of sick people
+find_min_sick_people <- function(population_size, null_hypothesis_prob, significance_level) {
+  for (sick_people in 9:population_size) {
+    test_result <- binom.test(sick_people, population_size, null_hypothesis_prob, alternative = "greater")
+    if (test_result$p.value < significance_level) {
+      return(sick_people)
+    }
+  }
+  return(NA) # If no significant number is found
+}
+
+# Find the minimum number of sick people
+min_sick_people <- find_min_sick_people(population_size, null_hypothesis_prob, significance_level)
+min_sick_people
 
 
 ```
 
 ##Question 4
 
-Use the information above and from the previous question to generate random samples of X where X Expo( = 3). Show R code and a plot of a histogram containing 1000 samples.
+Use the information above and from the previous question to generate random samples of X where X Expo( mu = 3). Show R code and a plot of a histogram containing 1000 samples.
 
 ```{r}
 # generate 1k random uniform samples
@@ -95,6 +115,14 @@ loglik <- dbinom(3, size = 5, p = theta, log = TRUE)
 #data frame for easier plotting
 like_data <- data.frame(Theta = theta , Loglik = loglik, Like = like)
 
+# Max  likelihood for basic plot
+MaxLike <- like - max(like)
+
+like_data$MaxLike <- MaxLike
+
+like_pHat <- theta[like == max(like)]
+
+
 #graphing the standard likelihood
 ggplot(data = like_data, aes(x = Theta, y = Like)) +
   geom_line() +
@@ -102,13 +130,6 @@ ggplot(data = like_data, aes(x = Theta, y = Like)) +
   labs(y = "likelihood", 
     x = expression(paste("Hypothesized theta, ", italic(p)))) + 
   theme_classic()
-
-# Max  likelihood for basic plot
-MaxLike <- like - max(like)
-
-like_data$MaxLike <- MaxLike
-
-like_pHat <- theta[like == max(like)]
 
 #graphing the log-likelihood
 ggplot(data = like_data, aes(x = Theta, y = Loglik)) +
@@ -136,3 +157,4 @@ ggplot(data = like_data, aes(x = Theta, y = Loglik)) +
 D. At what value of is the observed data most likely? Why must this value be the same for both plots?
 
 Theta = 0.6 is where the data is most likely, and both graphs are most likely share that value because the data is transformed but not changed. So the log transformation still preserves the order of the values it's transforming while keeping the parameters the same.
+
