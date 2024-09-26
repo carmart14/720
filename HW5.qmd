@@ -12,7 +12,6 @@ library(mvtnorm)
 
 ```
 
-
 ##Question 1: Central Limit Theorem
 
 ```{r}
@@ -58,8 +57,7 @@ curve(dnorm(x, mean = mean(sml$n100), sd = sd(sml$n100)), add = TRUE, col = "blu
 
 ```
 
-
-## Question 3: Visualizing MVN and MVt
+## Question 4: Visualizing MVN and MVt
 
 ```{r}
 
@@ -88,16 +86,14 @@ pairs(pw)
 
 ```
 
-The plots themselves didn't change but the scales did.
-
-
+The plots themselves didn't change but the scales did. Add something about the difference between the normal disto to the t distro 
 
 ##Question 5: Likelihoods of continuous rvs
 
 ```{r}
 #A
 y <- c(4.69, 1.05,5.89,0.52,0.14)
-dexp(y, rate = (1/6), log = TRUE)
+sum(dexp(y, rate = (1/6), log = TRUE))
 
 
 #B
@@ -107,17 +103,3 @@ dgamma(y, shape = 2, scale = 3, log = TRUE)
 dnorm(y, mean = 6, sd = 2, log = TRUE)
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
