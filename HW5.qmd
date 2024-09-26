@@ -1,0 +1,123 @@
+---
+title: "HW5"
+format: PDF
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(MASS)
+library(mvtnorm)
+
+```
+
+
+##Question 1: Central Limit Theorem
+
+```{r}
+
+# Set seed for reproducibility
+set.seed(123)
+
+# Function to generate sample means
+generate_sample_means <- function(n, num_samples = 1000) {
+  sample_means <- numeric(num_samples)
+  for (i in 1:num_samples) {
+    sample <- rexp(n) 
+    sample_means[i] <- mean(sample)
+  }
+  return(sample_means)
+}
+
+# Values of n (how many times to draw the 1k samples)
+n_values <- c(1, 5, 10, 100)
+
+# Generate sample means for each n
+sample_means_list <- lapply(n_values, generate_sample_means)
+
+sml <- data.frame(sample_means_list)
+colnames(sml) <- c("n1","n5","n10","n100")
+
+# Plot the results
+par(mfrow = c(2, 2))
+
+
+truehist(sml$n1, prob = TRUE)
+curve(dnorm(x, mean = mean(sml$n1), sd = sd(sml$n1)), add = TRUE, col = "blue", lwd = 2)
+
+truehist(sml$n5, prob = TRUE)
+curve(dnorm(x, mean = mean(sml$n5), sd = sd(sml$n5)), add = TRUE, col = "blue", lwd = 2)
+
+truehist(sml$n10, prob = TRUE)
+curve(dnorm(x, mean = mean(sml$n10), sd = sd(sml$n10)), add = TRUE, col = "blue", lwd = 2)
+
+truehist(sml$n100, prob = TRUE)
+curve(dnorm(x, mean = mean(sml$n100), sd = sd(sml$n100)), add = TRUE, col = "blue", lwd = 2)
+
+
+```
+
+
+## Question 3: Visualizing MVN and MVt
+
+```{r}
+
+# what is the R? just copied from the lec notes
+
+#r <- 0.9
+
+#Generate 3x3 Matrix
+Sigma <- cbind(c(1, 0.9, 0.6), c(0.9,0.1,0.3), c(0.6,0.3,1))
+
+#create MVN with 1k samples from the Matrix
+x <- rmvnorm(n = 1000, sigma = Sigma)
+
+#Plot
+pairs(x)
+
+
+#Generate 1k samples from a X2 distribution
+A <- rchisq(1000, 4)
+
+#Multiply each row of Sigma by the correlating row in A
+
+pw <- x*(1/((sqrt(A[i]/4))))
+
+pairs(pw)
+
+```
+
+The plots themselves didn't change but the scales did.
+
+
+
+##Question 5: Likelihoods of continuous rvs
+
+```{r}
+#A
+y <- c(4.69, 1.05,5.89,0.52,0.14)
+dexp(y, rate = (1/6), log = TRUE)
+
+
+#B
+dgamma(y, shape = 2, scale = 3, log = TRUE)
+
+#C
+dnorm(y, mean = 6, sd = 2, log = TRUE)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
