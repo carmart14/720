@@ -86,7 +86,7 @@ pairs(pw)
 
 ```
 
-The plots themselves didn't change but the scales did. Add something about the difference between the normal disto to the t distro 
+The plots themselves didn't change but the scales did. Add something about the difference between the normal disto to the t distro
 
 ##Question 5: Likelihoods of continuous rvs
 
@@ -97,9 +97,9 @@ sum(dexp(y, rate = (1/6), log = TRUE))
 
 
 #B
-dgamma(y, shape = 2, scale = 3, log = TRUE)
+sum(dgamma(y, shape = 2, scale = 3, log = TRUE))
 
 #C
-dnorm(y, mean = 6, sd = 2, log = TRUE)
+sum(dnorm(y, mean = 6, sd = 2, log = TRUE))
 
 ```
