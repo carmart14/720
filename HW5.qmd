@@ -1,6 +1,6 @@
 ---
 title: "HW5"
-format: PDF
+format: pdf
 editor: visual
 ---
 
@@ -61,9 +61,6 @@ curve(dnorm(x, mean = mean(sml$n100), sd = sd(sml$n100)), add = TRUE, col = "blu
 
 ```{r}
 
-# what is the R? just copied from the lec notes
-
-#r <- 0.9
 
 #Generate 3x3 Matrix
 Sigma <- cbind(c(1, 0.9, 0.6), c(0.9,0.1,0.3), c(0.6,0.3,1))
@@ -80,13 +77,13 @@ A <- rchisq(1000, 4)
 
 #Multiply each row of Sigma by the correlating row in A
 
-pw <- x*(1/((sqrt(A[i]/4))))
+pw <- x*(1/((sqrt(A/4))))
 
 pairs(pw)
 
 ```
 
-The plots themselves didn't change but the scales did. Add something about the difference between the normal disto to the t distro
+The plots themselves didn't change but the scales did. This shows the similarities between the t distribution and the normal. While the general curve of the data is similar the interaction with the data are different. 
 
 ##Question 5: Likelihoods of continuous rvs
 
