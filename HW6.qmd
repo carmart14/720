@@ -1,0 +1,210 @@
+---
+title: "HW6"
+format: pdf
+editor: visual
+---
+
+## Question 1: F
+
+```{r}
+
+# Load necessary library
+library(ggplot2)
+
+# Define the prior and posterior distributions
+alpha_prior <- 1
+beta_prior <- 1
+alpha_posterior <- 25
+beta_posterior <- 9
+
+# Create a sequence of p values
+p <- seq(0, 1, length.out = 1000)
+
+# Calculate densities
+prior_density <- dbeta(p, alpha_prior, beta_prior)
+posterior_density <- dbeta(p, alpha_posterior, beta_posterior)
+
+# Create a data frame for plotting
+data <- data.frame(p, prior_density, posterior_density)
+
+# Calculate posterior mean and mode
+posterior_mean <- alpha_posterior / (alpha_posterior + beta_posterior)
+posterior_mode <- (alpha_posterior - 1) / (alpha_posterior + beta_posterior - 2)
+
+# Create the plot
+ggplot(data, aes(x = p)) +
+  geom_line(aes(y = prior_density), color = "blue", linetype = "dashed", size = 1) +
+  geom_line(aes(y = posterior_density), color = "red", size = 1) +
+  geom_vline(xintercept = posterior_mean, color = "darkgreen", linetype = "dotted", size = 1) +
+  geom_vline(xintercept = posterior_mode, color = "purple", linetype = "dotted", size = 1) +
+  labs(title = "Prior and Posterior Densities of Ekud Virus Fatality Rate",
+       x = "Fatality Rate",
+       y = "Density") +
+  scale_y_continuous(limits = c(0, max(c(prior_density, posterior_density)))) +
+  annotate("text", x = posterior_mean, y = max(posterior_density) * 0.9, label = "Posterior Mean", color = "darkgreen", angle = 90, vjust = 1) +
+  annotate("text", x = posterior_mode, y = max(posterior_density) * 0.9, label = "Posterior Mode", color = "purple", angle = 90, vjust = 1) +
+  theme_minimal()
+
+```
+
+##Question 1:G 
+
+```{r}
+
+# Calculate the 2.5th and 97.5th percentiles
+lower_bound <- qbeta(0.025, alpha_posterior, beta_posterior)
+upper_bound <- qbeta(0.975, alpha_posterior, beta_posterior)
+
+# Print the results
+cat("The central 95% interval of the posterior is [", lower_bound, ", ", upper_bound, "]\n")
+
+```
+
+##Question 1:H
+
+```{r}
+# Calculate the probability P(theta <= 0.52)
+p_theta_le_0_52 <- pbeta(0.52, alpha_posterior, beta_posterior)
+
+# Print the result
+cat("P(theta <= 0.52 | y) =", p_theta_le_0_52, "\n")
+
+```
+
+##Question 2: D
+
+```{r}
+
+
+# Define the parameters for the prior and posterior distributions
+alpha_prior <- 1
+beta_prior <- 1 / 100  # scaling with the variance
+alpha_posterior <- 49 + 1
+beta_posterior <- 10 + 1 / 100  # scaling with the variance
+
+# Create a sequence of mu values
+mu <- seq(0, 15, length.out = 1000)
+
+# Calculate densities
+prior_density <- dgamma(mu, shape = alpha_prior, rate = beta_prior)
+posterior_density <- dgamma(mu, shape = alpha_posterior, rate = beta_posterior)
+
+# Create a data frame for plotting
+data <- data.frame(mu, prior_density, posterior_density)
+
+# Calculate posterior mean
+posterior_mean <- alpha_posterior / beta_posterior
+
+# Create the plot
+ggplot(data, aes(x = mu)) +
+  geom_line(aes(y = prior_density), color = "blue", linetype = "dashed", size = 1) +
+  geom_line(aes(y = posterior_density), color = "red", size = 1) +
+  geom_vline(xintercept = posterior_mean, color = "darkgreen", linetype = "dotted", size = 1) +
+  labs(title = "Prior and Posterior Densities of Poisson Rate",
+       x = "Poisson Rate (mu)",
+       y = "Density") +
+  scale_y_continuous(limits = c(0, max(c(prior_density, posterior_density)))) +
+  annotate("text", x = posterior_mean , y = max(posterior_density) * 0.5, label = "Posterior Mean", color = "darkgreen", angle = 90, vjust = 1) 
+
+```
+
+##Question 2:E
+```{r}
+
+# Calculate the 2.5th and 97.5th percentiles, code in lecture
+lower_bound <- qgamma(0.025, shape = alpha_posterior, rate = beta_posterior)
+upper_bound <- qgamma(0.975, shape = alpha_posterior, rate = beta_posterior)
+
+# Print the results
+cat("The central 95% interval of the posterior is [", lower_bound, ", ", upper_bound, "]\n")
+
+```
+
+##Question 2:F
+```{r}
+
+# Calculate the cumulative probabilities
+prob_4 <- pgamma(4, shape = alpha_posterior, rate = beta_posterior)
+prob_5 <- pgamma(5, shape = alpha_posterior, rate = beta_posterior)
+
+# Calculate P(4 <= lambda <= 5 | y)
+prob_4_to_5 <- prob_5 - prob_4
+
+# Print the result
+cat("P(4 <= lambda <= 5 | y) =", prob_4_to_5, "\n")
+
+#seems low, check me later
+
+```
+
+##Question 2:G 
+```{r}
+#1
+
+# Generate 1000 samples from the posterior distribution
+samples <- rgamma(1000, shape = alpha_posterior, rate = beta_posterior)
+
+# Estimate the posterior mean
+posterior_mean_estimate <- mean(samples)
+
+# Print the result
+cat("Estimated posterior mean E(mu | y) =", posterior_mean_estimate, "\n")
+
+#2
+
+# Calculate the proportion of samples within the interval [4, 5]
+prob_4_to_5 <- mean(samples >= 4 & samples <= 5)
+
+# Print the result
+cat("P(4 <= mu <= 5 | y) =", prob_4_to_5, "\n")
+
+#3
+
+# Calculate the squared values of the samples
+samples_squared <- samples^2
+
+# Create a density plot
+ggplot(data.frame(samples_squared), aes(x = samples_squared)) +
+  geom_density(fill = "blue", alpha = 0.5) +
+  labs(title = "Density Plot of p(μ^2 | y)",
+       x = expression(mu^2),
+       y = "Density")+
+  scale_x_continuous(breaks = seq(0, max(samples_squared), by = 10))
+
+#4
+# Estimate the posterior mean of mu^2
+posterior_mean_mu_squared <- mean(samples_squared)
+
+# Print the result
+cat("Estimated posterior mean E(mu^2 | y) =", posterior_mean_mu_squared, "\n")
+
+#5
+
+# Calculate the proportion of samples where mu^2 > 20
+prob_mu_squared_greater_20 <- mean(samples_squared > 20)
+
+# Print the result
+cat("P(mu^2 > 20 | y) =", prob_mu_squared_greater_20, "\n")
+
+#6
+# Generate 1000 predictive samples for y_11 from a Poisson distribution with rate parameter sampled from the posterior
+predictive_samples <- rpois(1000, lambda = samples)
+
+ggplot(data.frame(predictive_samples), aes(x = predictive_samples)) +
+  geom_histogram(binwidth = 1, fill = "pink", color = "black", alpha = 0.7) +
+  labs(title = "Histogram of Posterior Predictive Distribution for Future Obervation",
+       x = expression(y[11]),
+       y = "Frequency") 
+
+```
+
+
+
+
+
+
+
+
+
+
+
