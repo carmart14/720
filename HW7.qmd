@@ -1,0 +1,79 @@
+---
+title: "HW7"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+```
+
+## HW 7: MLE and Frequentist Behavior
+
+#Question 1:A,ii
+
+Plotting the likelihood of the data for theta from 0 to 1.
+
+```{r}
+# Define the likelihood function / pmf for a Bernoulli
+likelihood <- function(theta, n, x) {
+  return(theta^x * (1 - theta)^(n - x))
+}
+
+# Parameters from question
+n <- 32  # Total number of people
+x <- 8   # Number of survivors
+
+# 100 Theta values from 0 to 1
+theta <- seq(0, 1, length.out = 100)
+
+# Calculate likelihood for each theta
+likelihood_values <- likelihood(theta, n, x)
+
+
+# Plot the likelihood
+plot(theta, likelihood_values, type = "l", col = "blue", lwd = 2,
+     xlab = expression(theta), ylab = "Likelihood",
+     main = "Likelihood of Theta (0, 1)")+
+  grid()
+
+
+```
+
+
+#Question 1:B,i
+
+```{r}
+
+#same parameters as above, just logging the values and re-plotting
+loglike <- log10(likelihood_values)
+
+# Plot the likelihood
+plot(theta, loglike, type = "l", col = "blue", lwd = 2,
+     xlab = expression(theta), ylab = "Log-Likelihood",
+     main = "Log-Likelihood of Theta (0, 1)")+
+  grid()
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
