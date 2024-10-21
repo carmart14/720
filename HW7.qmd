@@ -9,9 +9,9 @@ library(tidyverse)
 library(ggplot2)
 ```
 
-## HW 7: MLE and Frequentist Behavior
+# HW 7: MLE and Frequentist Behavior
 
-#Question 1:A,ii
+## Question 1:A,ii
 
 Plotting the likelihood of the data for theta from 0 to 1.
 
@@ -41,15 +41,14 @@ plot(theta, likelihood_values, type = "l", col = "blue", lwd = 2,
 
 ```
 
-
-#Question 1:B,i
+## Question 1:B,i
 
 ```{r}
 
 #same parameters as above, just logging the values and re-plotting
 loglike <- log10(likelihood_values)
 
-# Plot the likelihood
+# Plot the log-likelihood
 plot(theta, loglike, type = "l", col = "blue", lwd = 2,
      xlab = expression(theta), ylab = "Log-Likelihood",
      main = "Log-Likelihood of Theta (0, 1)")+
@@ -58,22 +57,141 @@ plot(theta, loglike, type = "l", col = "blue", lwd = 2,
 
 ```
 
+## Question 1:B, ii
+
+```{r}
+# Plot the likelihood + MLE
+plot(theta, likelihood_values, type = "l", col = "blue", lwd = 2,
+     xlab = expression(theta), ylab = "Likelihood",
+     main = "Likelihood of Theta (0, 1)")+
+    abline(v = 0.25, col = "red", lwd = 2)+
+  grid()
 
 
 
+# Plot the log-likelihood + MLE
+plot(theta, loglike, type = "l", col = "blue", lwd = 2,
+     xlab = expression(theta), ylab = "Log-Likelihood",
+     main = "Log-Likelihood of Theta (0, 1)")+
+    abline(v = 0.25, col = "red", lwd = 2)+
+  grid()
+
+```
+
+## Question 1:B, iii
+
+```{r}
+
+# Parameters from question
+n1 <- 32  # Total number of people
+x <- 8   # Number of survivors
+n2 <- 320 # increased pop 
+MLE1 <- x/n
+
+niter <- 1000
+# Function to perform the simulation study
+sim_mle <- function(n, MLE1, niter) {
+  mle_estimates <- numeric(niter)
+  for (i in 1:niter) {
+    # Simulate new data
+    z <- rbinom(1, n, MLE1)
+    # Calculate MLE for the simulated data
+    mle_estimates[i] <- z / n
+  }
+  return(mle_estimates)
+}
+
+# Perform the simulation study for n1 and n2
+mle_estimates_n1 <- sim_mle(n1, MLE1, niter)
+mle_estimates_n2 <- sim_mle(n2, MLE1, niter)
+
+# Calculate statistics for n1
+mean_n1 <- mean(mle_estimates_n1)
+variance_n1 <- var(mle_estimates_n1)
+bias_n1 <- mean_n1 - MLE1
+mse_n1 <- mean((mle_estimates_n1 - MLE1)^2)
+
+
+# Calculate statistics for n2
+mean_n2 <- mean(mle_estimates_n2)
+variance_n2 <- var(mle_estimates_n2)
+bias_n2 <- mean_n2 - MLE1
+mse_n2 <- mean((mle_estimates_n2 - MLE1)^2)
+
+
+hist(mle_estimates_n1, breaks = 30, col = "blue", main = paste("n =", n1),
+     xlab = "MLE Estimates", ylab = "Frequency")
+abline(v = MLE1, col = "red", lwd = 2, lty = 2)
+
+
+hist(mle_estimates_n2, breaks = 30, col = "green", main = paste("n =", n2),
+     xlab = "MLE Estimates", ylab = "Frequency")
+abline(v = MLE1, col = "red", lwd = 2, lty = 2)+
 
 
 
+# Printed results and stats
+cat("Statistics for n =", n1, ":\n")
+cat("Mean:", mean_n1, "\n")
+cat("Variance:", variance_n1, "\n")
+cat("Bias:", bias_n1, "\n")
+cat("MSE:", mse_n1, "\n\n")
+
+cat("Statistics for n =", n2, ":\n")
+cat("Mean:", mean_n2, "\n")
+cat("Variance:", variance_n2, "\n")
+cat("Bias:", bias_n2, "\n")
+cat("MSE:", mse_n2, "\n")
+
+```
+
+## Question 2: A
+
+```{r}
+
+# Given y-values
+y <- c(3, 4, 3, 5, 9, 2, 9, 4, 8)
+
+# Define the log-likelihood function for Poisson distribution
+log_likelihood <- function(mu, y) {
+  sum(y * log(mu) - mu - lgamma(y + 1))
+}
+
+# Generate mu values from 0 to 10
+mu_values <- seq(0.01, 10, length.out = 100)
+
+# Calculate log-likelihood for each mu value
+log_likelihood_values <- sapply(mu_values, log_likelihood, y = y)
+
+# Plot the log-likelihood
+plot(mu_values, log_likelihood_values, type = "l", col = "blue", lwd = 2,
+     xlab = expression(mu), ylab = "Log-Likelihood",
+     main = "Log-Likelihood of Poisson Process")
+grid()
 
 
 
+```
 
+## Question 2 : B
 
+```{r}
 
+# Given y-values
+y <- c(3, 4, 3, 5, 9, 2, 9, 4, 8)
 
+# Calculate the MLE for mu
+mu_mle <- mean(y)
 
+# Plot the log-likelihood
+plot(mu_values, log_likelihood_values, type = "l", col = "blue", lwd = 2,
+     xlab = expression(mu), ylab = "Log-Likelihood",
+     main = "Log-Likelihood of Poisson Process")
+grid()
 
+# Add a vertical line at the MLE
+abline(v = mu_mle, col = "red", lwd = 2, lty = 2)
 
-
-
-
+# Print the MLE value
+cat("MLE for mu:", mu_mle, "\n")
+```

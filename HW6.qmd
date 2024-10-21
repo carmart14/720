@@ -47,7 +47,7 @@ ggplot(data, aes(x = p)) +
 
 ```
 
-##Question 1:G 
+##Question 1:G
 
 ```{r}
 
@@ -109,6 +109,7 @@ ggplot(data, aes(x = mu)) +
 ```
 
 ##Question 2:E
+
 ```{r}
 
 # Calculate the 2.5th and 97.5th percentiles, code in lecture
@@ -121,6 +122,7 @@ cat("The central 95% interval of the posterior is [", lower_bound, ", ", upper_b
 ```
 
 ##Question 2:F
+
 ```{r}
 
 # Calculate the cumulative probabilities
@@ -137,7 +139,8 @@ cat("P(4 <= lambda <= 5 | y) =", prob_4_to_5, "\n")
 
 ```
 
-##Question 2:G 
+##Question 2:G
+
 ```{r}
 #1
 
@@ -197,14 +200,3 @@ ggplot(data.frame(predictive_samples), aes(x = predictive_samples)) +
        y = "Frequency") 
 
 ```
-
-
-
-
-
-
-
-
-
-
-
