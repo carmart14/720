@@ -1,0 +1,235 @@
+---
+title: "HW8R"
+format: pdf
+editor: visual
+---
+
+# HW 8 Frequentist Testing
+
+## Question 1 
+
+```{r}
+
+sample <- rbinom(100, 32, 0.52)
+hist(sample)
+
+
+num.sll <- quantile(sample, 0.1)
+num.sul <- quantile(sample, 0.9)
+
+theory.sll <- qbinom(0.1, 32, 0.52)
+theory.sul <- qbinom(0.9, 32, 0.52)
+
+
+hist(sample, main = "Small sample histogram with limits")
+abline(v = sul, col="blue")
+abline(v=sll, col="blue")
+abline(v = theory.sul, col="red")
+abline(v=theory.sll, col="red")
+abline(v= dead, col="red")
+
+dead <- 24
+above.dead <- sum(sample >= dead)
+
+
+z.null <- rbinom(1e6, 32, 0.52)
+hist(z.null)
+
+num.zll <- quantile(z.null, 0.1)
+num.zul <- quantile(z.null, 0.9)
+
+theory.zll <- qbinom(0.1, 32, 0.52)
+theory.zul <- qbinom(0.9, 32, 0.52)
+
+
+hist(z.null, main = "z.null sample histogram with limits")
+abline(v= sul, col="blue")
+abline(v=sll, col="blue")
+abline(v = theory.zul, col="red")
+abline(v=theory.zll, col="red")
+abline(v= dead, col="red")
+
+dead <- 24
+above.deadz <- sum(z.null >= dead)
+
+
+```
+
+## Question 1B
+
+```{r}
+#rounding error? 
+probability <- 1 - pbinom(dead - 1, 1e6, 0.52)
+
+```
+
+## Question 1C
+
+```{r}
+
+log_likelihood <- function(theta, x, n) {
+  sum(dbinom(x, n, theta, log = TRUE))
+}
+
+#theta null/ one from the question
+theta_null <- 0.52
+
+# theta hat from the question
+theta_hat <- 0.75
+
+#getting theta
+theta_values <- seq(0.1, 0.9, length.out = 100)
+
+#log like
+log.likelihood.values <- sapply(theta_values, log_likelihood, z.null, 32)
+
+
+#plot the above information
+plot(theta_values, log.likelihood.values, type = "l", col = "blue", lwd = 2,
+     main = "Log-Likelihood Plot", xlab = expression(theta), ylab = "Log-Likelihood")
+abline(v = theta_hat, col = "red", lwd = 2, lty = 2)
+abline(v = theta_null, col = "green", lwd = 2, lty = 2)
+legend("topright", legend = c(expression(theta[hat]), expression(theta[null])),
+       col = c("red", "green"), lty = 2, lwd = 2)
+
+
+
+```
+
+## Question 2D
+
+```{r}
+# Significance levels from the question
+alpha_values <- c(0.05, 0.01, 0.001)
+
+# Calculate critical values for chi-squared distribution with 1 degree of freedom for each alpha
+critical_values <- sapply(alpha_values, function(alpha) qchisq(1 - alpha, df = 1))
+
+# Print the critical values
+names(critical_values) <- alpha_values
+print(critical_values)
+
+```
+
+## Question 2E
+
+```{r}
+
+## Null first
+# info given in the question
+n <- 32
+theta_null <- 0.52
+theta_hat <- 0.75
+
+# Calculate Fisher Information at theta_null
+fisher_information_null <- n / (theta_null * (1 - theta_null))
+
+# Calculate the variance of theta_hat using Fisher Information at theta_null
+var_theta_hat_null <- 1 / fisher_information_null
+
+# Calculate the Wald statistic
+wald_statistic_null <- (theta_hat - theta_null)^2 / var_theta_hat_null
+
+# Calculate the p-value
+p_value_null <- 1 - pchisq(wald_statistic_null, df = 1)
+
+# Print the results
+cat("Using Fisher Information at theta_null (0.52):\n")
+cat("Fisher Information:", fisher_information_null, "\n")
+cat("Wald Statistic:", wald_statistic_null, "\n")
+cat("p-value:", p_value_null, "\n")
+
+
+## now to do theta hat / MLE
+
+fisher_information_hat <- n / (theta_hat * (1 - theta_hat))
+
+# Calculate the variance of theta_hat using Fisher Information at theta_hat
+var_theta_hat_hat <- 1 / fisher_information_hat
+
+# Calculate the Wald statistic
+wald_statistic_hat <- (theta_hat - theta_null)^2 / var_theta_hat_hat
+
+# Calculate the p-value
+p_value_hat <- 1 - pchisq(wald_statistic_hat, df = 1)
+
+# Print the results
+cat("Using Fisher Information at theta_hat (0.75):\n")
+cat("Fisher Information:", fisher_information_hat, "\n")
+cat("Wald Statistic:", wald_statistic_hat, "\n")
+cat("p-value:", p_value_hat, "\n")
+
+
+```
+
+## Question 2F 
+
+```{r}
+
+## NUll first
+
+# Calculate the Score statistic
+score_statistic_null <- (theta_hat - theta_null) / sqrt(var_theta_hat_null)
+
+# Calculate the p-value for the Score statistic
+p_value_score_null <- 2 * (1 - pnorm(abs(score_statistic_null)))
+
+## Theta hat
+
+# Calculate the Score statistic
+score_statistic_hat <- (theta_hat - theta_null) / sqrt(var_theta_hat_hat)
+
+# Calculate the p-value for the Score statistic
+p_value_score_hat <- 2 * (1 - pnorm(abs(score_statistic_hat)))
+
+# Print the results
+cat("Using Fisher Information at theta_null (0.52):\n")
+cat("Score Statistic:", score_statistic_null, "\n")
+cat("p-value:", p_value_score_null, "\n")
+cat("Using Fisher Information at theta_hat (0.75):\n")
+cat("Score Statistic:", score_statistic_hat, "\n")
+cat("p-value:", p_value_score_hat, "\n")
+```
+
+##Question 2G 
+
+Likelihood ratio test from the lecture is L(theta_LME|X) / L(theta_0 |X) aka l(theta_MLE - l(theta_0))
+
+
+```{r}
+
+#FIXME
+
+log_likelihood_null <- sum(dbinom(sample, n, theta_null, log = TRUE))
+
+# Calculate the log-likelihood under the alternative hypothesis
+log_likelihood_hat <- sum(dbinom(sample, n, theta_hat, log = TRUE))
+
+# Calculate the LRT statistic
+lrt_statistic <- -2 * (log_likelihood_null - log_likelihood_hat)
+
+# Calculate the p-value
+p_value_lrt <- 1 - pchisq(lrt_statistic, df = 1)
+
+# Print the results
+cat("Log-Likelihood under null hypothesis:", log_likelihood_null, "\n")
+cat("Log-Likelihood under alternative hypothesis:", log_likelihood_hat, "\n")
+cat("LRT Statistic:", lrt_statistic, "\n")
+cat("p-value:", p_value_lrt, "\n")
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
