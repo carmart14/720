@@ -6,7 +6,7 @@ editor: visual
 
 # HW 8 Frequentist Testing
 
-## Question 1 
+## Question 1
 
 ```{r}
 
@@ -22,8 +22,8 @@ theory.sul <- qbinom(0.9, 32, 0.52)
 
 
 hist(sample, main = "Small sample histogram with limits")
-abline(v = sul, col="blue")
-abline(v=sll, col="blue")
+abline(v = num.sul, col="blue")
+abline(v=num.sll, col="blue")
 abline(v = theory.sul, col="red")
 abline(v=theory.sll, col="red")
 abline(v= dead, col="red")
@@ -43,8 +43,8 @@ theory.zul <- qbinom(0.9, 32, 0.52)
 
 
 hist(z.null, main = "z.null sample histogram with limits")
-abline(v= sul, col="blue")
-abline(v=sll, col="blue")
+abline(v= num.zul, col="blue")
+abline(v=num.zll, col="blue")
 abline(v = theory.zul, col="red")
 abline(v=theory.zll, col="red")
 abline(v= dead, col="red")
@@ -162,7 +162,7 @@ cat("p-value:", p_value_hat, "\n")
 
 ```
 
-## Question 2F 
+## Question 2F
 
 ```{r}
 
@@ -191,10 +191,9 @@ cat("Score Statistic:", score_statistic_hat, "\n")
 cat("p-value:", p_value_score_hat, "\n")
 ```
 
-##Question 2G 
+##Question 2G
 
-Likelihood ratio test from the lecture is L(theta_LME|X) / L(theta_0 |X) aka l(theta_MLE - l(theta_0))
-
+Likelihood ratio test from the lecture is L(theta_LME\|X) / L(theta_0 \|X) aka l(theta_MLE - l(theta_0))
 
 ```{r}
 
@@ -219,6 +218,83 @@ cat("p-value:", p_value_lrt, "\n")
 
 
 ```
+
+## Question 2A
+
+```{r}
+
+y <- c(3,4,3,5,9,2,2,9,4,8)
+
+mice.null <- 4.5
+mice.mle <- 5.2
+
+# Calculate the standard error 
+standard.error <- sqrt(mice.mle)
+
+# Calculate the Wald statistic (Twald)
+T_wald <- (mice.mle - mice.null) / standard.error
+
+# Calculate the p-value associated with the Wald statistic
+p_value <- 2 * (1 - pnorm(abs(T_wald)))
+
+# Fishers Information
+FI <- 10/mice.mle
+
+# Output the results
+T_wald
+p_value
+FI
+
+```
+
+## Question 2B
+
+```{r}
+# Calculate the score function using null
+U_theta <- (sum(y) - length(y) * mice.null) / mice.null
+
+# Fisher information from question above
+
+# Calculate the score statistic (Tscore)
+T_score <- U_theta / sqrt(FI)
+
+# Calculate the p-value associated with the score statistic
+p_value <- 2 * (1 - pnorm(abs(T_score)))
+
+# Output the results
+theta_hat
+T_score
+p_value
+```
+
+
+## Question 2C
+
+```{r}
+
+# Calculate the log-likelihood under the null hypothesis
+log.like.mice.null <- sum(dpois(y, lambda = mice.null, log = TRUE))
+
+# Calculate the log-likelihood under the alternative hypothesis
+log.lice.mice.alt <- sum(dpois(y, lambda = mice.mle, log = TRUE))
+
+# Calculate the likelihood ratio test statistic (TLR)
+T_LR <- -2 * (log.like.mice.null - log.lice.mice.alt)
+
+# Calculate the p-value associated with the likelihood ratio test statistic
+p_value <- pchisq(T_LR, df = 1, lower.tail = FALSE)
+
+# Output the results
+theta_hat
+T_LR
+p_value
+
+```
+
+
+
+
+
 
 
 
