@@ -1,0 +1,34 @@
+---
+title: "HW9"
+format: pdf
+editor: visual
+---
+
+## Homework 9 - Multiple Testing
+
+# Question 1: Differential Gene Expression
+
+a. 
+```{r}
+#read in the HW file
+pmix <- scan(file = "pmix.txt")
+
+#histogram of data displayed as proportions
+pmix.hist <- hist(pmix)
+pmix.hist$density <- pmix.hist$counts / sum(pmix.hist$counts)
+plot(pmix.hist, freq = F)
+
+```
+
+There is a peak on the far left side, so this is a sign there is signal in the data. This resembles more of a exponential distribution 
+
+b.
+```{r}
+
+plot(ppoints(pmix))
+
+
+
+
+```
+

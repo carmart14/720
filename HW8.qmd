@@ -1,0 +1,37 @@
+---
+title: "HW8"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+```
+
+## Question 1
+
+```{r}
+
+rand <- rbinom(1000, 32, 0.52)
+hist(rand, breaks = 32)
+abline(v = c(v1, v2), col="red")
+
+
+z <- 24
+v1 <- qbinom(0.52, 32,0.1, lower.tail = TRUE)
+v2 <- qbinom(0.52, 32,0.9, lower.tail = TRUE)
+
+
+
+#z.null <- rbinom(1e6, 32, 0.52)
+#hist(z.null)
+#abline(v = 24, col="red")
+
+
+
+
+
+
+
+```
