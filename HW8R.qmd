@@ -12,7 +12,7 @@ editor: visual
 
 sample <- rbinom(100, 32, 0.52)
 hist(sample)
-
+dead <- 24
 
 num.sll <- quantile(sample, 0.1)
 num.sul <- quantile(sample, 0.9)
@@ -49,7 +49,7 @@ abline(v = theory.zul, col="red")
 abline(v=theory.zll, col="red")
 abline(v= dead, col="red")
 
-dead <- 24
+
 above.deadz <- sum(z.null >= dead)
 
 

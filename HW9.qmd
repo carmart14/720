@@ -8,7 +8,8 @@ editor: visual
 
 # Question 1: Differential Gene Expression
 
-a. 
+a.i  
+
 ```{r}
 #read in the HW file
 pmix <- scan(file = "pmix.txt")
@@ -20,15 +21,70 @@ plot(pmix.hist, freq = F)
 
 ```
 
-There is a peak on the far left side, so this is a sign there is signal in the data. This resembles more of a exponential distribution 
+There is a peak on the far left side, so this is a sign there is signal in the data. This resembles more of a exponential distribution
 
-b.
+a. ii
+
+```{r}
+#generate even points from 0 to 1
+x <- ppoints(1000)
+
+#sort the txt file points
+y <- pmix[order(pmix)]
+
+#plotting the null points (900)
+plot(x[1:900], y[1:900], main = "Q-Q Plot for Null",
+     xlab = "Theoretical Quantiles", ylab = "Observed P-values", pch = 19, cex = 0.5)+
+abline(0, 1, col = "blue", lty = 2)
+
+# Plot for the whole set of 1,000 p-values
+plot(x, y, col=ifelse(x<=0.05, "red", "black"), main = "Q-Q Plot for All 1k P-values",
+     xlab = "Theoretical Quantiles", ylab = "Observed P-values", pch = 19, cex = 0.5)+
+abline(0, 1, col = "blue", lty = 2)
+
+```
+
+a. iii these plots look the same so something is wrong i think
+
 ```{r}
 
-plot(ppoints(pmix))
+# log10 transformation
+x_transformed <- -log10(x)
+y_transformed <- -log10(y)
 
+# plot the null with the transformed points
+plot(x_transformed[1:900], y_transformed[1:900], main = "Q-Q Plot for Null",
+     xlab = "-log10 Theoretical Quantiles", ylab = "-log10 Observed P-values", pch = 19, cex = 0.5)+
+abline(0, 1, col = "blue", lty = 2)
+
+#  plot all 1k points with transformed points 
+plot(x_transformed, y_transformed, col=ifelse(x<=0.05, "red", "black"), 
+     main = "Q-Q Plot for All 1k P-values",
+     xlab = "-log10(Theoretical Quantiles)", ylab = "-log10(Observed P-values)", 
+     pch = 19, cex = 0.5)+
+abline(0, 1, col = "blue", lty = 2)
 
 
 
 ```
+
+a. iv The researchers transformed the data for better visualization of the significant points and their proportion to the null values. This plot also improves on seeing how far from the null the points are, not just the significance level.
+
+
+b. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
