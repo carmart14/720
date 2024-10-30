@@ -6,9 +6,9 @@ editor: visual
 
 ## Homework 9 - Multiple Testing
 
-# Question 1: Differential Gene Expression
+### Question 1: Differential Gene Expression
 
-a.i  
+a.i
 
 ```{r}
 #read in the HW file
@@ -23,7 +23,7 @@ plot(pmix.hist, freq = F)
 
 There is a peak on the far left side, so this is a sign there is signal in the data. This resembles more of a exponential distribution
 
-a. ii
+a.  ii
 
 ```{r}
 #generate even points from 0 to 1
@@ -44,7 +44,7 @@ abline(0, 1, col = "blue", lty = 2)
 
 ```
 
-a. iii these plots look the same so something is wrong i think
+a.  iii these plots look the same so something is wrong i think
 
 ```{r}
 
@@ -68,10 +68,54 @@ abline(0, 1, col = "blue", lty = 2)
 
 ```
 
-a. iv The researchers transformed the data for better visualization of the significant points and their proportion to the null values. This plot also improves on seeing how far from the null the points are, not just the significance level.
+a.  iv The researchers transformed the data for better visualization of the significant points and their proportion to the null values. This plot also improves on seeing how far from the null the points are, not just the significance level.
+
+### Question 2 MCC Math
+
+```{r}
+
+TP <- sum(pmix <= 0.05)
+
+FP <- 45
+
+FN <- 45
+
+TN <- sum(pmix>=0.05)
 
 
-b. 
+# MCC Math
+
+top <- (TP*TN)-(FP*FN)
+
+srt <- (TP+FP)*(TP+FN)*(TN+FP)*(TN+FN)
+
+bottom <- sqrt(srt)
+
+top/bottom
+
+```
+
+
+
+### Question 2:C ii 
+
+```{r}
+# BF correction 
+bon.f.pvals <- p.adjust(pmix, method = "bonferroni")
+
+corrected.TP <- sum(bon.f.pvals <=0.05)
+corrected.TN <- sum(bon.f.pvals >=0.05)
+corrected.FP <- 100 - corrected.TP 
+corrected.FN <- corrected.TN - 900
+
+cat("The corrected values are:", "TP =", corrected.TP, ", TN =", corrected.TN, ", FP =", corrected.FP, "FN = ", corrected.FP) 
+
+
+```
+
+
+
+
 
 
 
