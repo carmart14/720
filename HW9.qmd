@@ -28,6 +28,7 @@ a.  ii
 ```{r}
 #generate even points from 0 to 1
 x <- ppoints(1000)
+x <- sort(x)
 
 #sort the txt file points
 y <- pmix[order(pmix)]
@@ -47,15 +48,30 @@ abline(0, 1, col = "blue", lty = 2)
 a.  iii these plots look the same so something is wrong i think
 
 ```{r}
+# seperate and sort the null points 
+non.null <- pmix[1:100]
+null.p <- pmix[101:1000]
 
-# log10 transformation
-x_transformed <- -log10(x)
-y_transformed <- -log10(y)
+non.null <- sort(non.null)
+null.p <- sort(null.p)
+
+trans.non.null <- -log10(non.null)
+trans.null.p <- -log10(null.p)
+
+ppx <- ppoints(900)
+ppx <- -log10(ppx)
 
 # plot the null with the transformed points
-plot(x_transformed[1:900], y_transformed[1:900], main = "Q-Q Plot for Null",
-     xlab = "-log10 Theoretical Quantiles", ylab = "-log10 Observed P-values", pch = 19, cex = 0.5)+
+
+plot(trans.null.p, ppx, main = "Q-Q Plot for Null",
+     xlab = "-log10 Theoretical Quantiles", ylab = "-log10 Observed P-values", pch = 19, cex = 0.5, xlim = c(0,6), ylim = c(0,6))+
 abline(0, 1, col = "blue", lty = 2)
+  
+# log10 transformation
+x_transformed <- -log(x)
+y_transformed <- -log(y)
+
+# plot the null with the transformed points
 
 #  plot all 1k points with transformed points 
 plot(x_transformed, y_transformed, col=ifelse(x<=0.05, "red", "black"), 
@@ -82,7 +98,6 @@ FN <- 45
 
 TN <- sum(pmix>=0.05)
 
-
 # MCC Math
 
 top <- (TP*TN)-(FP*FN)
@@ -95,9 +110,7 @@ top/bottom
 
 ```
 
-
-
-### Question 2:C ii 
+### Question 2:C ii
 
 ```{r}
 # BF correction 
@@ -110,23 +123,20 @@ corrected.FN <- corrected.TN - 900
 
 cat("The corrected values are:", "TP =", corrected.TP, ", TN =", corrected.TN, ", FP =", corrected.FP, "FN = ", corrected.FP) 
 
-
 ```
 
+### Question 2D  Benjamini-Hochberg False Discovery Rate (BH-FDR)
+
+```{r}
+
+fdr.p.vals <- p.adjust(pmix, method = "fdr")
+
+sig.fdr.tp <- fdr.p.vals <= 0.05
+sig.fdr.tn <- fdr.p.vals >= 0.05
+sig.fdr.fn <- (sum(sig.fdr.tn)/length(fdr))
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+```
 
 
 
