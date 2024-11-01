@@ -61,7 +61,7 @@ trans.null.p <- -log10(null.p)
 ppx <- ppoints(900)
 ppx <- -log10(ppx)
 
-# plot the null with the transformed points
+# plot the null with the transformed points 
 
 plot(trans.null.p, ppx, main = "Q-Q Plot for Null",
      xlab = "-log10 Theoretical Quantiles", ylab = "-log10 Observed P-values", pch = 19, cex = 0.5, xlim = c(0,6), ylim = c(0,6))+
@@ -90,15 +90,15 @@ a.  iv The researchers transformed the data for better visualization of the sign
 
 ```{r}
 
-TP <- sum(pmix <= 0.05)
+TP <- 100
 
 FP <- 45
 
-FN <- 45
+FN <- 0
 
 TN <- sum(pmix>=0.05)
 
-# MCC Math
+# MCC Math 
 
 top <- (TP*TN)-(FP*FN)
 
@@ -117,28 +117,43 @@ top/bottom
 bon.f.pvals <- p.adjust(pmix, method = "bonferroni")
 
 corrected.TP <- sum(bon.f.pvals <=0.05)
-corrected.TN <- sum(bon.f.pvals >=0.05)
+corrected.TN <- sum(bon.f.pvals >= 0.05) 
 corrected.FP <- 100 - corrected.TP 
-corrected.FN <- corrected.TN - 900
+corrected.FN <- 100 - corrected.TP
 
-cat("The corrected values are:", "TP =", corrected.TP, ", TN =", corrected.TN, ", FP =", corrected.FP, "FN = ", corrected.FP) 
+cat("The corrected values are:", "TP =", corrected.TP, ", TN =", corrected.TN, ",FP =", corrected.FP, "FN = ", corrected.FN) 
+
+top <- (corrected.TP*corrected.TN) - (corrected.FP*corrected.FN)
+
+bottom <- (corrected.TP+corrected.FP)*(corrected.TP+corrected.FN)*(corrected.TN+corrected.FP)+(corrected.TN+corrected.FN)
+
+top/(sqrt(bottom))
 
 ```
 
-### Question 2D  Benjamini-Hochberg False Discovery Rate (BH-FDR)
+### Question 2D Benjamini-Hochberg False Discovery Rate (BH-FDR)
 
 ```{r}
 
 fdr.p.vals <- p.adjust(pmix, method = "fdr")
 
-sig.fdr.tp <- fdr.p.vals <= 0.05
-sig.fdr.tn <- fdr.p.vals >= 0.05
-sig.fdr.fn <- (sum(sig.fdr.tn)/length(fdr))
+sig.fdr.tp <- sum(fdr.p.vals <= 0.05)
+sig.fdr.fn <-  100 - sig.fdr.tp
+sig.fdr.tn <- 900 - sig.fdr.fn
+sig.fdr.fp <- 100 - sig.fdr.tp
+
+
+
+cat("The corrected values are confusion matrix is :", "TP =", sig.fdr.tp, ", TN =", sig.fdr.tn, ",FP =", sig.fdr.fp, "FN = ", sig.fdr.fn) 
+
+
+
+
+top.fdr <- (sig.fdr.tp*sig.fdr.tn)-(sig.fdr.fn*sig.fdr.fp)
+
+bottom.fdr <- (sig.fdr.tp+sig.fdr.fp)*(sig.fdr.tp+sig.fdr.fn)*(sig.fdr.tn+sig.fdr.fp)*(sig.fdr.tn+sig.fdr.fn)
+
+top.fdr/(sqrt(bottom.fdr))
 
 
 ```
-
-
-
-
-
