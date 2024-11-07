@@ -19,7 +19,7 @@ group2 <- c( 101.51, 107.97, 94.76, 94.85, 97.19, 106.35, 98.9, 108.16, 95.76, 1
 mean.1 <- mean(group1)
 mean.2  <- mean(group2)
 difference <- group1 - group2
-MLE <- mean(differnce)
+MLE <- mean(difference)
 
 # standard deviations 
 sd1 <- sd(group1)
@@ -47,8 +47,6 @@ cat("mean difference", MLE, "\n")
 # using functions to do the same thing
 test.result <- t.test(group1, group2, paired = TRUE)  
 print(test.result)
-
-## FIX ME, the T isn't the same
   
   
 ```
@@ -88,9 +86,6 @@ cat("degrees of freedom:", df, "\n")
 cat("p-value:", p.value, "\n")
 cat("group1 mean =", mean.1, "group2 mean =", mean.2)
 
-
-# also check because these p values aren't matching that well 
-
 ```
 
 Question 1C, permutation test
@@ -118,10 +113,9 @@ cat(N, "out of", R, " => p-value is ", N/R)
 ```
 
 Question 1D, perform a Wilcox Test
- 
+
 ```{r}
-# check which is the right option
-wilcox.test(group1, group2, paired = TRUE)
+
 wilcox.test(group1, group2, paired = FALSE)
 
 ```
@@ -133,7 +127,7 @@ Question 1E, transform the data and see why that matters
 # transform the data
 trans.tot <- (toty - min(toty)^3)
 
-#seperating into 2 groups
+#separating into 2 groups
 trans1 <- trans.tot[1:10]
 trans2 <- trans.tot[11:20]
 
@@ -143,10 +137,15 @@ print(test.result)
 test.result <- t.test(trans1, trans2, paired = FALSE)  
 print(test.result)
 
-wilcox.test(group1, group2, paired = TRUE)
-wilcox.test(group1, group2, paired = FALSE)
+wilcox.test(trans1, trans2, paired = TRUE)
+wilcox.test(trans1, trans2, paired = FALSE)
 
 ```
+
+
+ Which of the tests is invariant to the transformation and why? 
+ 
+ The Wilcoxon-Man-Whitney test is generally invariant because the test ranks the data rather than the actual values. So transformaling the datya equally isn't gonna have that drastic of an effect. 
 
 
 
