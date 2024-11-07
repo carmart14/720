@@ -1,0 +1,159 @@
+---
+title: "HW10"
+format: pdf
+editor: visual
+---
+
+## HW 10 - Two Groups, Linear Models Intro
+
+### Question 1: 2Group tests and Leehrat Virus
+
+```{r}
+# Setting up the two groups
+group1 <- c(98.34, 102.18,113.39,110.34,107.12,101.24,106.47,109.12,101.82,112.54)
+group2 <- c( 101.51, 107.97, 94.76, 94.85, 97.19, 106.35, 98.9, 108.16, 95.76, 101.08)
+
+# the difference
+mean.1 <- mean(group1)
+mean.2  <- mean(group2)
+differnce <- group1 - group2
+MLE <- mean(differnce)
+
+# standard deviations 
+sd1 <- sd(group1)
+sd2 <- sd(group2)
+# standard error
+se <- sqrt((sd1^2 / 10) + (sd2^2 / 10))
+
+# t value
+t.stat <- (mean.1 - mean.2) / se  
+
+# degrees of freedom (pairs - 1 )
+df <- 9
+
+#  p-value
+p.value <- 2 * pt(-abs(t.stat), df)
+
+# Print results
+cat("t-value:", t.stat, "\n")
+cat("degrees of freedom:", df, "\n")
+cat("p-value:", p.value, "\n")
+cat("mean difference", MLE, "\n")
+
+
+# using functions to do the same thing
+test.result <- t.test(group1, group2, paired = TRUE)  
+print(test.result)
+
+## FIX ME, the T isn't the same
+  
+  
+```
+
+
+```{r}
+
+test.result <- t.test(group1, group2, paired = FALSE)
+print(test.result)
+
+# the difference
+mean.1 <- mean(group1)
+mean.2  <- mean(group2)
+differnce <- group1 - group2
+MLE <- mean(differnce)
+
+# standard deviations 
+sd1 <- sd(group1)
+sd2 <- sd(group2)
+# standard error
+se <- sqrt((sd1^2 / 10) + (sd2^2 / 10))
+
+# t value
+t.stat <- (mean.1 - mean.2) / se  
+
+# degrees of freedom (n - 1, per group ie 20 - 2)
+df <- 18
+
+#  p-value
+p.value <- 2 * pt(-abs(t.stat), df)
+
+
+# Print results
+cat("t-value:", t.stat, "\n")
+cat("degrees of freedom:", df, "\n")
+cat("p-value:", p.value, "\n")
+cat("group1 mean =", mean.1, "group2 mean =", mean.2)
+
+
+# also check because these p values aren't matching that well 
+
+```
+
+
+```{r}
+toty <- c( 98.34, 102.18, 113.39, 110.34, 107.12,
+ 101.24, 106.47, 109.12, 101.82, 112.54,
+ 101.51, 107.97, 94.76, 94.85, 97.19,
+ 106.35, 98.9, 108.16, 95.76, 101.08)
+
+totx <- c(1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0)
+
+# calc the difference of means
+Tobs <- abs(mean((toty[totx==1])- mean(toty[totx==0]))) 
+N <- 0
+R <- 1e4
+for (r in 1:R){
+xr <- sample(totx, replace=FALSE) # sample a random permutation
+Tr <- abs(mean(toty[xr==1]) - mean(toty[xr==0])) # calc the difference of means
+if (Tr >= Tobs){ N <- N + 1}
+} # update count if random T is same or bigger than obs T
+cat(N, "out of", R, " => p-value is ", N/R)
+
+
+```
+
+
+
+```{r}
+# check which is the right option
+wilcox.test(group1, group2, paired = TRUE)
+wilcox.test(group1, group2, paired = FALSE)
+
+```
+
+
+```{r}
+
+# transform the data
+trans.tot <- (toty - min(toty)^3)
+
+#seperating into 2 groups
+trans1 <- trans.tot[1:10]
+trans2 <- trans.tot[11:20]
+
+# function testing
+test.result <- t.test(trans1, trans2, paired = TRUE)  
+print(test.result)
+test.result <- t.test(trans1, trans2, paired = FALSE)  
+print(test.result)
+
+wilcox.test(group1, group2, paired = TRUE)
+wilcox.test(group1, group2, paired = FALSE)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
