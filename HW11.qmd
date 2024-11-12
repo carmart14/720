@@ -1,0 +1,35 @@
+---
+title: "HW11"
+format: pdf
+editor: visual
+---
+
+# HW 11: Linear Models
+
+```{r}
+
+# Load data
+crp <- read.csv("crp.csv")
+
+# Design matrix including interaction term
+X <- model.matrix(CRP ~ Age + Gender + Age*Gender, data = crp)
+
+# Response vector
+y <- crp$CRP
+
+# Cross-product of the design matrix
+cross <- t(X) %*% X
+
+# Cross-product of design matrix and  y
+cross_y <- t(X) %*% y
+
+# Solve for  coefficients using Normal Equations
+beta <- solve(cross) %*% cross_y
+print(beta)
+
+#standard lm method
+fit <- lm(CRP ~ Age + Gender + Age*Gender, data = crp)
+summary(fit)
+
+```
+
