@@ -1,0 +1,38 @@
+---
+title: "class"
+format: html
+editor: visual
+---
+```{r}
+
+shopping <- read.csv("shopping.csv")
+head(shopping)
+
+
+fit0 <- lm(bill.favs ~ pnt.butter + kitch.foil + grapes.lb, data=shopping)
+fit1 <- lm(bill.total ~ pnt.butter + kitch.foil + grapes.lb, data=shopping)
+
+hist(residuals(fit0))
+hist(residuals(fit1))
+
+```
+
+
+```{r}
+
+# transform the model, then tr-run the model like before. That will provide the normalcy
+
+bill.total.1_1 <- lm(sqrt(bill.total.1) ~ pnt.butter + kitch.foil + grapes.lb, data=shopping)
+
+bill.total.2_2 <- lm((bill.total.2^-1) ~ pnt.butter + kitch.foil + grapes.lb, data=shopping)
+
+bill.total.3_3 <- lm(log(bill.total.3) ~ pnt.butter + kitch.foil + grapes.lb, data=shopping)
+
+
+hist(residuals(bill.total.2_2))
+
+qqnorm(bill.total.2_2$residuals)
+
+
+```
+
