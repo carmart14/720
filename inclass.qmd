@@ -3,6 +3,7 @@ title: "class"
 format: html
 editor: visual
 ---
+
 ```{r}
 
 shopping <- read.csv("shopping.csv")
@@ -16,7 +17,6 @@ hist(residuals(fit0))
 hist(residuals(fit1))
 
 ```
-
 
 ```{r}
 
@@ -35,4 +35,3 @@ qqnorm(bill.total.2_2$residuals)
 
 
 ```
-

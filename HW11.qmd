@@ -33,3 +33,43 @@ summary(fit)
 
 ```
 
+
+```{r}
+
+int <- lm(CRP ~ Age*Gender, data = crp)
+add1 <- lm(CRP ~ Age, data = crp)
+add2 <- lm(CRP ~ Age + Gender, data = crp)
+add3 <- lm(CRP ~ Gender, data = crp)
+allint <- lm(CRP ~ Age + Gender + Age*Gender, data = crp)
+
+anova(int, add1, add2, add3, allint)
+
+```
+
+```{r}
+anova(add2, add1, test="Chisq" )
+
+null  <- logLik(add2)
+MLE <- logLik(allint)
+
+LRT <- (2*(MLE - null))
+
+pval <- pchisq(LRT, df=1)
+pval <- 1- pval
+
+```
+
+```{r}
+
+summary(int, test="T")
+anova(int, add2)
+
+
+```
+
+
+
+
+
+
+
