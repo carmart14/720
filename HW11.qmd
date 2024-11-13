@@ -6,6 +6,12 @@ editor: visual
 
 # HW 11: Linear Models
 
+## Question 1:Linear Modeling of CRP
+
+### Modeling
+
+#### A:ii
+
 ```{r}
 
 # Load data
@@ -33,9 +39,12 @@ summary(fit)
 
 ```
 
+### Testing
+
+#### B:i
 
 ```{r}
-
+# creating the different models for later comparisons
 int <- lm(CRP ~ Age*Gender, data = crp)
 add1 <- lm(CRP ~ Age, data = crp)
 add2 <- lm(CRP ~ Age + Gender, data = crp)
@@ -45,6 +54,10 @@ allint <- lm(CRP ~ Age + Gender + Age*Gender, data = crp)
 anova(int, add1, add2, add3, allint)
 
 ```
+
+### Testing
+
+#### B:ii
 
 ```{r}
 anova(add2, add1, test="Chisq" )
@@ -59,17 +72,145 @@ pval <- 1- pval
 
 ```
 
+### Testing
+
+#### B:iii
+
 ```{r}
 
 summary(int, test="T")
 anova(int, add2)
 
+```
+
+### Testing
+
+#### C:i
+
+```{r}
+
+hist(residuals(int))
 
 ```
 
+**What should these look like if the linear model assumptions are being met? Are they?**
+
+This should look normal if the linear model assumptions are being met but this is skewed to the left; not resembling a standard normal distribution.
+
+#### C:ii
+
+```{r}
+qqnorm(int$residuals)
+qqline(int$residuals, col = "red", lwd= 2, lty=2)
+
+```
+
+**What should this plot look like if model assumptions are being met? Are they?**
+
+This should follow the reference line (red) almost exactly if this was following a standard normal and has no signal in the data. \# FIX ME
+
+#### C:iii
+
+```{r}
+#log transforming the full interaction model
+int.trans <- lm(log(CRP) ~ Age*Gender, data = crp)
+
+#same as above
+qqnorm(int.trans$residuals)
+qqline(int.trans$residuals, col = "red", lwd= 2, lty=2)
+
+```
+
+```{r}
+
+crp <- crp |>
+  select(CRP, Age, Gender) |>
+  mutate(crp.10 = log10(CRP))
+
+# model comparisons with transformed data
+int <- lm(crp.10 ~ Age*Gender, data = crp)
+add1 <- lm(crp.10 ~ Age, data = crp)
+add2 <- lm(crp.10 ~ Age + Gender, data = crp)
+add3 <- lm(crp.10 ~ Gender, data = crp)
+allint <- lm(crp.10 ~ Age + Gender + Age*Gender, data = crp)
+
+anova(int, add1, add2, add3, allint)
+
+```
+
+**Why is the base of the log irrelevant from a tting or p-value perspective?**
+
+# answer me
+
+**Why might this version of the analysis be preferred? What would be an argument against it?**
+
+# answer me
+
+### Interpreting the Results
+
+#### D:i
+
+```{r}
+
+# manual CI 
+
+# coefficients 
+point.est <- summary(add3)$coefficients
+
+# slope
+beta.est <- point.est["Gender", "Estimate"]
+#standard error
+se.beta.hat <- point.est["Gender", "Std. Error"]
+
+# Degrees of freedom
+df <- add3$df.residual
+
+# Critical value from the t-distribution for 95% confidence interval
+alpha <- 0.05
+t.crit <- qt(1 - alpha/2, df)
+
+# Margin of error
+MOE <- t.crit * se.beta.hat
+
+# confidence interval bounds
+lower_bound <- beta.est - MOE
+upper_bound <- beta.est + MOE
+
+# Confidence interval
+confidence_interval <- c(lower_bound, upper_bound)
+confidence_interval
+
+# function
+confint(add3, level = 0.95 )
+
+
+```
+
+#### D:ii
+
+```{r}
+# age only model from above
+add1 <- lm(crp.10 ~ Age, data = crp)
+
+#new ages to test 
+new.age <- data.frame(Age = c(25,35,45))
+
+# predicting with add1 model (age is the only predictor)
+predict(add1, newdata = new.age)
+
+# CI functions
+predict(add1, newdata = new.age, interval = "predict", level = 0.95)
+
+```
+
+#### D:iii
+
+```{r}
 
 
 
+
+```
 
 
 
