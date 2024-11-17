@@ -4,11 +4,34 @@ format: pdf
 editor: visual
 ---
 
+```{r}
+library(dplyr)
+```
+Carmen Martin
+
+
 # HW 11: Linear Models
 
 ## Question 1:Linear Modeling of CRP
 
 ### Modeling
+
+#### A:i
+
+We are modeling CRP levels based on age, gender, and the interaction between age and gender. The linear model can be expressed as:
+
+$$
+\text{CRP} = \beta_0 + \beta_1 \cdot \text{Age} + \beta_2 \cdot \text{Gender} + \beta_3 \cdot (\text{Age} \times \text{Gender}) + \epsilon
+$$
+
+Where: ($\beta_0$) is the intercept. ($\beta_1$) is the coefficient for age. ($\beta_2$) is the coefficient for gender. ($\beta_3$) is the coefficient for the interaction between age and gender. ($\epsilon $)is the error term.
+
+# Interpretation
+
+-   ( $\beta_1$): The effect of age on CRP levels.
+-   ( $\beta_2$): The effect of gender on CRP levels.
+-   ( $\beta_3$): The effect of the interaction between age and gender on CRP levels.
+-   ($\epsilon$): The error term
 
 #### A:ii
 
@@ -107,7 +130,7 @@ qqline(int$residuals, col = "red", lwd= 2, lty=2)
 
 **What should this plot look like if model assumptions are being met? Are they?**
 
-This should follow the reference line (red) almost exactly if this was following a standard normal and has no signal in the data. \# FIX ME
+This should follow the reference line (red) almost exactly if this was following a standard normal and has no signal in the data. This is showing the residuals are not following a normal distribution because we can see the deviation from the red dashed line.
 
 #### C:iii
 
@@ -122,7 +145,7 @@ qqline(int.trans$residuals, col = "red", lwd= 2, lty=2)
 ```
 
 ```{r}
-
+#adding a log10 transformed data to the crp table
 crp <- crp |>
   select(CRP, Age, Gender) |>
   mutate(crp.10 = log10(CRP))
@@ -138,13 +161,13 @@ anova(int, add1, add2, add3, allint)
 
 ```
 
-**Why is the base of the log irrelevant from a tting or p-value perspective?**
+**Why is the base of the log irrelevant from a fitting or p-value perspective?**
 
-# answer me
+The transformation is stable and has so effect on the coeffients realtionship to the model. So it's not impacting the fitting and thus the p-values from said fitting. Either base is fine because the overall relationship between the data is the same, transformation makes it eaiser for human interpretation and visualization
 
 **Why might this version of the analysis be preferred? What would be an argument against it?**
 
-# answer me
+There are benfits for modeling relationships with transformed data, generally normalizing the data and making the betas eaiser to understand but the cons are that you lose some information and assumes some rules about the data that can be issues later
 
 ### Interpreting the Results
 
@@ -189,28 +212,79 @@ confint(add3, level = 0.95 )
 #### D:ii
 
 ```{r}
-# age only model from above
-add1 <- lm(crp.10 ~ Age, data = crp)
+# fullinteraction model
+allint <- lm(crp.10 ~ Age + Gender + Age*Gender, data = crp)
 
-#new ages to test 
-new.age <- data.frame(Age = c(25,35,45))
+#gathering coefficents
+coefs <- allint$coefficients
 
-# predicting with add1 model (age is the only predictor)
-predict(add1, newdata = new.age)
+# predicting how it changes in 10 years, no coefs for sex or mu
+yearinc <- (coefs[2]*10) + (coefs[4]*10)
 
 # CI functions
-predict(add1, newdata = new.age, interval = "predict", level = 0.95)
+ci1 <- confint(allint, interval = "confidence", level = 0.95)
+
+print(ci1[2,1:2])
 
 ```
 
 #### D:iii
 
+lecture: 20, 18-21
+
 ```{r}
 
+# full interaction model
+allint <- lm(crp.10 ~ Age + Gender + Age*Gender, data = crp)
 
+#gathering coefficents
+coefs <- allint$coefficients
 
+# predicting how it changes for a 30 year old female
+fem30 <- coefs[1] +  (coefs[2]*30) + coefs[3] + (coefs[4]*30)
+
+#transforming 
+fem30 <- exp(fem30)
+fem30
 
 ```
 
+#### D: iiii
 
+```{r}
+# lecture 20, slide 20 
+#new data frame for prediction
+new_data <- data.frame(Age = 30, Gender = 1)
 
+# Calculate the predicted values and confidence intervals
+pred <- predict(allint, newdata = new_data, interval = "confidence", level = 0.95)
+
+pred
+
+```
+
+#### D: V
+
+```{r}
+# new data is the same as before, 30 year old female
+
+# Calculate the predicted values and prediction intervals
+pred <- predict(allint, newdata = new_data, interval = "prediction", level = 0.95)
+
+pred
+
+```
+
+#### D: vi
+
+```{r}
+library(sjPlot)
+library(ggplot2)
+
+plot_model(allint, type = "int", show.data = TRUE)
+
+```
+
+**Describe in words, as if to a lay audience, the meaning and implications of an Age by**
+
+An interaction between two things in the model means that the effect of one thing on the outcome depends on the level of the other thing, so there are going to be different CRP outcomes from that are effected by sex and age individually and together. So without interaction we'd assume the CRP of is the same for both sex's anad wouldnt be impacted by age but with the interaction model, its impacted by both.
