@@ -1,28 +1,35 @@
 ---
+title: "Untitled"
+output: html
+date: "2024-11-24"
+---
+---
 title: "HW12: Logistisc Regression, LMM "
 format: pdf
 editor: visual
 ---
-
 ## Question 1: CRP and Logistic Regression
 
 
 ### Question A: i
 
-$$
+\[
+\log\left(\frac{\pi}{1-\pi}\right) \sim \mu + \beta_{\text{age}} X_{\text{age}}
+\]
 
-Log(\frac{pi}{1-pi}) \~ \mu + \beta*{age}X*{age} \\
+\[
+\log\left(\frac{\pi}{1-\pi}\right) \sim \mu + \beta_{\text{age}} X_{\text{age}} + \beta_{\text{sex}} X_{\text{sex}}
+\]
 
-Log(\frac{pi}{1-pi}) \~ \mu + \beta*{age}X*{age} + \beta*{sex}X*{sex} \\
+\[
+\log\left(\frac{\pi}{1-\pi}\right) \sim \mu + \beta_{\text{age}} X_{\text{age}} + \beta_{\text{sex}} X_{\text{sex}} + \beta_{\text{age} \times \text{sex}} X_{\text{age} \times \text{sex}}
+\]
 
-Log(\frac{pi}{1-pi}) \~ \mu + \beta*{age}X*{age} + \beta*{sex}X*{sex} + \beta\_{age\*sex}X\_{agexsex}
-
-$$
 
 ### Question A: ii
 
 ```{r}
-
+install.packages("psycModel")
 # converts pi to odds
 
 prob2odds <- function(p_i) {
@@ -50,37 +57,50 @@ inv.logit <- function(eta_i) {
 
 Log model
 
-$$
+For the logistic regression model:
 
-log\left(\frac{p_i}{1 - p_i}\right) = \beta*0 +* \beta{\text{gender}} \cdot \text{gender}i + \beta{\text{age}} \cdot \text{age}\_i \\
+\[
+\log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_{\text{gender}} \cdot \text{gender}_i + \beta_{\text{age}} \cdot \text{age}_i
+\]
 
-male = 0 and female = 1 \\
+Where gender is coded as 0 for male and 1 for female.
 
-Odds for Male (gender = 0): \\
+#### Odds for Male (gender = 0):
 
-log\left(\frac{p_{male}}{1 - p_{male}} \right) = \beta\*0 +\* \beta{age} \* 30 \\
+\[
+\log\left(\frac{p_{\text{male}}}{1 - p_{\text{male}}}\right) = \beta_0 + \beta_{\text{age}} \cdot 30
+\]
 
-Expo on both sides
+Exponentiating both sides:
 
-\left(\frac{p_{male}}{1-p{_{male}}} \right) = e\^{\beta\*{0}+\*\beta{age}\*30} \\
+\[
+\frac{p_{\text{male}}}{1 - p_{\text{male}}} = e^{\beta_0 + \beta_{\text{age}} \cdot 30}
+\]
 
-Odds for Female (gender = 1):
+#### Odds for Female (gender = 1):
 
-log\left(\frac{p_{female}}{1 - {female}} \right) = \beta*0 +* \beta{gender} + \beta\_{age} \* 30 \\
+\[
+\log\left(\frac{p_{\text{female}}}{1 - p_{\text{female}}}\right) = \beta_0 + \beta_{\text{gender}} + \beta_{\text{age}} \cdot 30
+\]
 
-$Expo on Both sides$
+Exponentiating both sides:
 
-\left(\frac{p_{female}}{1-p{_{female}}} \right) = e\^{\beta*{0}+*\beta{gender} + \beta\_{age}\*30} \\
+\[
+\frac{p_{\text{female}}}{1 - p_{\text{female}}} = e^{\beta_0 + \beta_{\text{gender}} + \beta_{\text{age}} \cdot 30}
+\]
 
-Express female offs in-terms of male odds
+Expressing female odds in terms of male odds:
 
-\frac{p_{female}}{1-p_{female}} = e\^{\beta{gender}}x \frac{p_{male}}{1-p_{male}} \\
+\[
+\frac{p_{\text{female}}}{1 - p_{\text{female}}} = e^{\beta_{\text{gender}}} \cdot \frac{p_{\text{male}}}{1 - p_{\text{male}}}
+\]
 
-$And since the male version is the same as female without the e^{\beta_{gender}} we can substitute it:$
+And thus:
 
-\frac{p_{female}}{1-p{female}} = e\^{{\beta\_{gender}} x \frac{p_{male}}{1-p_{male}}}
+\[
+\text{odds(female, 30)} = e^{\beta_{\text{gender}}} \times \text{odds(male, 30)}
+\]
 
-$$
 
 And thus:
 
@@ -294,6 +314,11 @@ print(stem(crp$status))
 
 ```
 
+** why choosing such an extreme level might be less preferable in this
+ case**
+ 
+Risk of loosing information and false display of the data. We can see in the stem plots that the difference in choosing a cutoff is going to drastically reduce significance. If the values are too dratic than some (if not all) informatin will be lost. That defeats the purpose of presenting data
+
 ### Question E
 
 Make 2 models and make sure they are using status as the pred term using lm and glm anova(model, test LRT)
@@ -328,3 +353,9 @@ print(lts.test2)
 **Comment on the similarity of the logistic model vs the LPM approximation, and whether the effect estimates have the same meaning**
 
 Log (glm) is better for a more binary outcome while lm is suited for a more continuous variable type. the linear coefs are direct changes while glm is log-odds that are exponentized to get the odds ratio. The estimates are going to be different mathmatically but the interpretion should fit for each situation. You should always change model type to best fit the data your dealing with
+
+```{r}
+#html_to_pdf(file.path = "/Users/ivory/Downloads/GitHub/720/test.html", scale  =1)
+# pagedown::chrome_print("/Users/ivory/Downloads/GitHub/720/test.html")
+```
+

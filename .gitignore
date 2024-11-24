@@ -10,3 +10,5 @@
 *.html
 *HW3_files
 *0.5
+*.aux
+*test2.12.qmd
