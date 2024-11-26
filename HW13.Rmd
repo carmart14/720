@@ -1,0 +1,34 @@
+---
+title: "HW13: LM and LMM"
+output: pdf_document
+date: "2024-11-26"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1: Chimp Brain Polynomial
+
+### a 
+```{r}
+
+chimpcortex <- read.csv(file = "chimpcortex.csv")
+plot(chimpcortex)
+
+```
+
+### b
+
+```{r}
+# Making a 1000x4 matrix
+X <- matrix(rnorm(4000),nrow = 1000, ncol = 4)
+colnames(X) <- c("1", "2","3", "4")
+
+#Estimating the Betas without lm
+
+
+
+
+```
+
