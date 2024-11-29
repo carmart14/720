@@ -10,9 +10,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Question 1: Chimp Brain Polynomial
 
-### a 
-```{r}
+### a
 
+```{r}
+#read in and standard plot
 chimpcortex <- read.csv(file = "chimpcortex.csv")
 plot(chimpcortex)
 
@@ -21,14 +22,97 @@ plot(chimpcortex)
 ### b
 
 ```{r}
-# Making a 1000x4 matrix
-X <- matrix(rnorm(4000),nrow = 1000, ncol = 4)
-colnames(X) <- c("1", "2","3", "4")
+# Extract the response variable y and predictor variable age
+y <- chimpcortex$synapses
+age <- chimpcortex$age
 
-#Estimating the Betas without lm
+# Construct the design matrix with polynomial terms
+X <- as.matrix(cbind(1, age, age^2, age^3))
+
+# Calculating beta using the normal equation
+beta.hat <- solve(t(X) %*% X) %*% t(X) %*% y
+
+# Reporting the estimated beta values
+beta.hat
+
+# Plot the data
+plot(chimpcortex$age, chimpcortex$synapses, 
+     xlab = "Age (years)", 
+     ylab = "Synapses per 100 cubic micrometers", 
+     main = "Synaptic proliferation in chimpanzee motor cortex")
+
+# Add the fitted curve
+curve(beta.hat[1] + beta.hat[2]*x + beta.hat[3]*x^2 + beta.hat[4]*x^3, 
+      add = TRUE, col = "red", lwd = 2)
 
 
+# Fit the model using lm()
+model <- lm(synapses ~ age + I(age^2) + I(age^3), data = chimpcortex)
+
+# Reporting the estimates
+summary(model)$coefficients
+
+```
+
+## Question 2: Mouse Body Weight
+
+### a
+
+```{r}
+# Load the data
+mousebw <- read.csv(file = "mousebw.csv")
+
+# Fit the linear model
+lm_model <- lm(bw ~ diet, data = mousebw)
+
+# Report the point estimate for the diet effect
+diet_effect <- summary(lm_model)$coefficients["diet", "Estimate"]
+round(diet_effect, 2) #2 for the decimal point
 
 
 ```
 
+### b
+
+```{r}
+# Load necessary library
+library(lme4)
+
+# Fit the linear mixed model
+fitr <- lmer(bw ~ diet + (1 | strain), data = mousebw)
+```
+
+ Write out the regression model
+
+$\text{bw}\_i = \beta\_0 + \beta\_1 \cdot \text{diet}\_i + \epsilon\_i$
+
+Where:
+
+$(\text{bw}_i)$ is the body weight of the (i)-th mouse.
+
+$(\beta_0)$ is the intercept, representing the average body weight of mice on the reference diet (e.g., normal diet).
+
+$(\beta_1)$ is the coefficient for the diet effect, representing the change in body weight associated with the high-fat diet compared to the normal diet.
+
+$(\text{diet}_i)$ is a binary variable indicating the diet of the (i)-th mouse (e.g., 0 for normal diet, 1 for high-fat diet).
+
+$(\epsilon_i)$ is the error term, capturing the variation in body weight not explained by the diet.
+
+```{r}
+# Call summary() on the fitted model and report the point estimate for the diet effect
+summary(fitr)$coefficients["diet", "Estimate"]
+
+# Calculate the (ICC)
+var_strain <- as.numeric(VarCorr(fitr)$strain[1])
+var_residual <- attr(VarCorr(fitr), "sc")^2
+ICC <- var_strain / (var_strain + var_residual)
+ICC
+
+# Get the shrinkage estimates for the strain effects
+shrinkage_estimates <- ranef(fitr)$strain
+shrinkage_estimates
+```
+
+Linear Model: This part fits a simple linear model to estimate the effect of diet on body weight.
+
+Linear Mixed Model: This part accounts for the additional dependency structure due to different strains by including a random intercept for strain.
